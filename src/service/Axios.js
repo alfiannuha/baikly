@@ -4,9 +4,7 @@ import { TokenService } from "@/service/Storage.Service.js"
 import Config from "@/service/Config"
 import store from '@/store'
 
-// const { VUE_APP_ACCESS_KEY,VUE_APP_BASE_URL,VUE_APP_TITLE } = process.env;
 const  VUE_APP_BASE_URL  = Config.checkDomain();
-const VUE_APP_ACCESS_KEY = 'd986c63c-0982-46c6-8aed-2b16d72e1633'
 
 function getAccessToken() {
   // @todo: load access token from cookie or locale storage
@@ -16,11 +14,6 @@ function getAccessToken() {
 function getFcm() {
   // @todo: load access token from cookie or locale storage
   return TokenService.getFCMToken();
-}
-
-function getAccessCode() {
-  // @todo: load access token from cookie or locale storage
-  return TokenService.getSerialNumber();
 }
 
 function transformKeys(data, iteratee) {
@@ -64,7 +57,6 @@ export function request(method, url, config = {}, options = {}) {
   const xauth = `Basic ${VUE_APP_ACCESS_KEY}` ;
 
   // @see: https://tools.ietf.org/html/rfc6750
-  // const bearerToken = `Bearer ${getAccessToken()}`;
   const bearerToken = `Bearer ${getAccessToken()}`;
 
   axios.interceptors.request.use(

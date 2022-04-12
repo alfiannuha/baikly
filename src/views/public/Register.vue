@@ -1,13 +1,34 @@
 <template>
   <div style="min-height: 100vh;">
     <v-row no-gutters>
+      <v-col cols="4" class="text-center">
+        <v-img
+          :src="require('@/assets/img/login_background.png')" style="height: 100vh;">
+          <div class="justify-center text-center px-16 mx-10" style="position: absolute;top: 40%;">
+            <div class="font-weight-normal text-h4">
+              Welcome back!
+            </div>
+            <div class="my-4">
+              To keep connected with us please
+              login with your personal info
+            </div>
+            <v-btn large color="#23A6F0" outlined class="mt-6" @click="$router.push('/login')">
+              Log in
+            </v-btn>
+          </div>
+        </v-img>
+        <v-img
+          style="position: absolute; top: 25px; left: 25px; width: 80px; height: 35px;"
+          :src="require('@/assets/img/baikly_logo.png')">
+        </v-img>
+      </v-col>
       <v-col
         cols="8"
         class="text-center justify-center" style="padding: 0 16% 0 16%">
         <div
           class="d-flex-row align-center justify-center text-center">
           <div class="color-default text-h3 mt-16 mb-8">
-            Welcome to BAIKLY
+            Create Account
           </div>
           <v-btn
             large
@@ -20,11 +41,26 @@
             Continue with Google
           </v-btn>
           <p class="text-third font-weight-normal mb-10 mt-10">
-            or use your email account
+            or use your email for registration
           </p>
 
           <ValidationObserver ref="observer">
             <v-form class="text-left mb-5">
+              <ValidationProvider name="Full Name" rules="required|email" v-slot="{ errors }">
+                <div class="text-color mb-2">Full Name</div>
+                <v-text-field
+                  v-on:keyup.enter="save" 
+                  outlined
+                  dense
+                  autocomplete="off"
+                  single-line
+                  color="primary"
+                  placeholder="your name"
+                  v-model="form.fullname"
+                  :error-messages="errors"
+                  required>
+                </v-text-field>
+              </ValidationProvider>
               <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
                 <div class="text-color mb-2">Email</div>
                 <v-text-field
@@ -70,9 +106,6 @@
               v-show="error.message.length > 0"
               v-html="error.message">
             </v-alert>
-            <p class="text-second subtitle-2">
-              Forgot password?
-            </p>
             <v-btn
               block
               x-large
@@ -83,31 +116,10 @@
               v-on:keyup.enter="save"
               @click="save"
               class="white--text text-capitalize">
-              Log In
-            </v-btn>
-          </div>
-        </div>
-      </v-col>
-      <v-col cols="4" class="text-center">
-        <v-img
-          :src="require('@/assets/img/login_background.png')" style="height: 100vh;">
-          <div class="justify-center text-center px-16 mx-10" style="position: absolute;top: 40%;">
-            <div class="font-weight-normal text-h4">
-              Hi, friend!
-            </div>
-            <div class="my-4">
-              Enter your personal details
-              and start your journey with us 
-            </div>
-            <v-btn large color="#23A6F0" outlined class="mt-6" @click="$router.push('/register')">
               Sign Up
             </v-btn>
           </div>
-        </v-img>
-        <v-img
-          style="position: absolute; top: 25px; left: 25px; width: 80px; height: 35px;"
-          :src="require('@/assets/img/baikly_logo.png')">
-        </v-img>
+        </div>
       </v-col>
     </v-row>
   </div>

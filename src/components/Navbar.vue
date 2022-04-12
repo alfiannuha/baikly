@@ -158,7 +158,7 @@
       :mini-variant.sync="mini"
       fixed
       app
-      v-if="$route.name !== '/login'">
+      v-if="$route.name !== '/auth'">
       <v-list-item class="px-2" style="margin-bottom:7px">
         <v-list-item-avatar>
           <!-- <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img> -->
@@ -373,7 +373,7 @@
         this.$store.state.process.run = true
         TokenService.removeToken()
         localStorage.clear();
-        window.location = '/login'
+        window.location = '/auth'
       }
     },
   }

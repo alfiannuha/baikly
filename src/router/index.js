@@ -29,7 +29,7 @@ router.beforeEach((to, from, next) => {
   
   if (!isAll && !isPublic && !authenticated) {
     return next({
-      path: "/login"
+      path: "/auth"
     })
   }
   if (authenticated && onlyLoggedOut) {

@@ -16,7 +16,7 @@
   }
   ::-webkit-scrollbar-thumb{
     border-radius: 10px;
-    background-color: #F05326; 
+    background-color: #23A6F0; 
     /* background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%,rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%,transparent 75%, transparent) */
   }
   
@@ -49,7 +49,7 @@
   
   /* BACKGROUND */
   .background-default {
-    /* background-image: linear-gradient(to right, #F05326, #420918); */
+    /* background-image: linear-gradient(to right, #23A6F0, #420918); */
     /* background: url('../../assets/background-image.png'); */
     background-repeat: no-repeat;
     background-position: right;
@@ -59,20 +59,22 @@
   
   /* COLOR */
   .color-default {
-    color: #F05326 !important;
+    color: #0061FF !important;
   }
   
   /* TEXT */
   .text-first {
-    color: #333333 !important;
+    color: #252B42 !important;
   }
   .text-second {
-    color: #7B7B7B !important;
+    color: #737373 !important;
   }
   .text-third {
-    color: #B2B2B2 !important;
+    color: #A8A8A8 !important;
   }
-  
+  .text-color {
+    color: #252B42 !important;
+  }
   /* BOX SHADOW */
   .box-shadow {
     box-shadow: 0px 5px 15px -5px rgba(0, 0, 0, 0.2) !important;
@@ -158,7 +160,7 @@
   
   /* BREADCRUMBS */
   /* .v-breadcrumbs__item {
-    color: #F05326 !important;
+    color: #23A6F0 !important;
   } */
   
   /* TEXT EDITOR */
@@ -243,7 +245,7 @@
   
   /* VUE2 DATEPICKER */
   .mx-datepicker-header {
-    background-color: #F05326 !important;
+    background-color: #23A6F0 !important;
   }
   .title-date{
     color: #fff
@@ -268,7 +270,7 @@
     font-size: 16px !important;
   }
   .mx-calendar-content .cell.active{
-    background-color: #F05326 !important;
+    background-color: #23A6F0 !important;
   }
   .mx-icon-calendar {
     visibility: hidden !important;

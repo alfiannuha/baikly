@@ -1,14 +1,32 @@
-const Login = () => import(/* webpackPrefetch: true */ '@/views/public/Login.vue')
+const Auth = () => import(/* webpackPrefetch: true */ '@/views/public/Auth.vue')
+// const Login = () => import(/* webpackPrefetch: true */ '@/views/public/Login.vue')
+// const Register = () => import(/* webpackPrefetch: true */ '@/views/public/Register.vue')
 
 const routes = [
   {
-    path: "/login",
-    name: "login",
-    component: Login,
+    path: "/auth",
+    name: "Auth",
+    component: Auth,
     meta: {
-      title: "Login"
+      title: "Auth"
     }
-  }
+  },
+  // {
+  //   path: "/login",
+  //   name: "login",
+  //   component: Login,
+  //   meta: {
+  //     title: "Login"
+  //   }
+  // },
+  // {
+  //   path: "/register",
+  //   name: "register",
+  //   component: Register,
+  //   meta: {
+  //     title: "Register"
+  //   }
+  // }
 ]
 export default routes.map(route => {
   const meta = {

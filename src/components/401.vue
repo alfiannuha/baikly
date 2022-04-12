@@ -76,7 +76,7 @@ export default {
       TokenService.removeToken()
       this.$store.state.dialogAuthAlert = false
       this.$store.state.process.run = false
-      window.location = '/login'
+      window.location = '/auth'
     }
   }
 }

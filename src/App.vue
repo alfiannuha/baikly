@@ -6,10 +6,10 @@
         light>
         <router-view />
       </v-main>
-    <Footer 
+    <!-- <Footer 
       v-if="$vuetify.breakpoint.name !== 'xs' 
       && $vuetify.breakpoint.name !== 'sm' 
-      && $vuetify.breakpoint.name !== 'md'"/>
+      && $vuetify.breakpoint.name !== 'md'"/> -->
   </v-app>
 </template>
 
@@ -39,7 +39,7 @@ export default {
   watch: { 
     '$route' (to, from) {
       // this.tokenFirebase()
-      if(this.$route.path != '/login'){
+      if(this.$route.path != '/auth'){
         this.preventPrevilage()
       }
     } 
@@ -48,7 +48,7 @@ export default {
     preventPrevilage(){
       if(!TokenService.getToken()){
         TokenService.removeToken()
-        window.location = '/login'
+        window.location = '/auth'
       }
     }
   }

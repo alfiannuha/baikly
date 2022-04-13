@@ -24,7 +24,7 @@
         color="#263238"
         elevation="3"
         class="white--text text-capitalize caption"
-        to="/dashboard">
+        to="/auth">
         <v-icon small class="mr-1">mdi-chevron-left-circle-outline</v-icon>
         Kembali Ke Halaman Awal
       </v-btn>

@@ -14,7 +14,7 @@
                 To keep connected with us please
                 login with your personal info
               </div>
-              <v-btn large color="#23A6F0" outlined class="mt-6" @click="isShow = false">
+              <v-btn large color="#23A6F0" outlined class="mt-6" @click="isShow = false;$refs.observerLogin.reset()">
                 Log in
               </v-btn>
             </div>
@@ -47,12 +47,12 @@
               or use your email for registration
             </p>
 
-            <ValidationObserver ref="observer">
+            <ValidationObserver ref="observerRegister">
               <v-form class="text-left mb-5">
-                <ValidationProvider name="Full Name" rules="required|email" v-slot="{ errors }">
+                <ValidationProvider name="Full Name" rules="required|max:50" v-slot="{ errors }">
                   <div class="text-color mb-2">Full Name</div>
                   <v-text-field
-                    v-on:keyup.enter="loginWithEmail" 
+                    v-on:keyup.enter="loginWithEmail('register')" 
                     outlined
                     dense
                     autocomplete="off"
@@ -67,7 +67,7 @@
                 <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
                   <div class="text-color mb-2">Email</div>
                   <v-text-field
-                    v-on:keyup.enter="loginWithEmail" 
+                    v-on:keyup.enter="loginWithEmail('register')" 
                     outlined
                     dense
                     autocomplete="off"
@@ -82,11 +82,11 @@
                 </ValidationProvider>
                 <ValidationProvider
                   name="Password"
-                  rules="required"
+                  rules="required|min:8"
                   v-slot="{ errors }">
                   <div class="text-color mb-2">Password</div>
                   <v-text-field
-                    v-on:keyup.enter="loginWithEmail"
+                    v-on:keyup.enter="loginWithEmail('register')"
                     class="mt-2 mb-1"
                     outlined
                     color="primary"
@@ -116,8 +116,8 @@
                 color="primary"
                 :disabled="$store.state.process.run"
                 :loading="$store.state.process.run"
-                v-on:keyup.enter="loginWithEmail"
-                @click="loginWithEmail"
+                v-on:keyup.enter="loginWithEmail('register')"
+                @click="loginWithEmail('register')"
                 class="white--text text-capitalize">
                 Sign Up
               </v-btn>
@@ -153,12 +153,12 @@
               or use your email account
             </p>
 
-            <ValidationObserver ref="observer">
+            <ValidationObserver ref="observerLogin">
               <v-form class="text-left mb-5">
                 <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
                   <div class="text-color mb-2">Email</div>
                   <v-text-field
-                    v-on:keyup.enter="loginWithEmail" 
+                    v-on:keyup.enter="loginWithEmail('login')" 
                     outlined
                     dense
                     autocomplete="off"
@@ -173,11 +173,11 @@
                 </ValidationProvider>
                 <ValidationProvider
                   name="Password"
-                  rules="required"
+                  rules="required|min:8"
                   v-slot="{ errors }">
                   <div class="text-color mb-2">Password</div>
                   <v-text-field
-                    v-on:keyup.enter="loginWithEmail"
+                    v-on:keyup.enter="loginWithEmail('login')"
                     class="mt-2 mb-1"
                     outlined
                     color="primary"
@@ -200,9 +200,9 @@
                 v-show="error.message.length > 0"
                 v-html="error.message">
               </v-alert>
-              <p class="text-second subtitle-2">
+              <v-btn class="text-second subtitle-2 mb-7 text-capitalize" to="/forgot/password" text x-small>
                 Forgot password?
-              </p>
+              </v-btn>
               <v-btn
                 block
                 x-large
@@ -210,8 +210,8 @@
                 color="primary"
                 :disabled="$store.state.process.run"
                 :loading="$store.state.process.run"
-                v-on:keyup.enter="loginWithEmail"
-                @click="loginWithEmail"
+                v-on:keyup.enter="loginWithEmail('login')"
+                @click="loginWithEmail('login')"
                 class="white--text text-capitalize">
                 Log In
               </v-btn>
@@ -230,7 +230,7 @@
                 and start your journey with us 
               </div>
               <div class="g-signin2" data-onsuccess="onSignIn"></div>
-              <v-btn large color="#23A6F0" outlined class="mt-6" @click="isShow = true">
+              <v-btn large color="#23A6F0" outlined class="mt-6" @click="isShow = true; $refs.observerRegister.reset()">
                 Sign Up
               </v-btn>
             </div>
@@ -246,7 +246,7 @@
 </template>
 
 <script>
-// import firebaseapp from "../../plugins/Firebase"
+import firebaseapp from "../../plugins/Firebase"
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { post } from "@/service/Axios";
 
@@ -269,6 +269,13 @@ export default {
       show: false,
     }
   },
+  mounted() {
+    let slug = this.$route.query.slug;
+
+    if (slug == "is_login") {
+      this.isShow = false;
+    }
+  },
   methods: {
     // login with google
     loginWithGoogle() {
@@ -280,6 +287,8 @@ export default {
           const token = credential.accessToken;
           // The signed-in user info.
           const user = result.user;
+          this.loginGoogle(user)
+          console.log(user);
           // ...
         }).catch((error) => {
           // Handle Errors here.
@@ -292,22 +301,113 @@ export default {
           // ...
         });
     },
-    // login with email and password
-    async loginWithEmail() {
+    // login with google / sso
+    async loginGoogle(user) {
       this.process.run = true;
-      this.error.message = '';
-      await post(`auth/register`).then((response) => {
-        let res = response.data
-        if (res.status == 200) {
-          this.$store.commit('setUser', res.data.data);
-          this.$store.commit('setToken', res.data.token);
-          this.$router.push('/');
+
+      let data = {
+        email: user.email,
+        fullname: user.displayName,
+      }
+      await post(`auth/login-sso`, data).then((response) => {
+        // let res = response.data
+        if (response.status == 200) {
+          if (state == "login") {
+            let data = {
+              "user": {
+                  "user_id": "string",
+                  "user_email": "superadmin@gmail.com",
+                  "user_role": "admin",
+                  "user_status": "active",
+                  "is_email_google": 0,
+                  "is_fill_personal":0
+              },
+              "credential": {
+                  "type": "bearer",
+                  "token": "Mg.oweFrE_squuHoZD7oFVT6rgWxfEsdxTxx78q5RCfFwaQu9W8tVvDZsAg2oIa",
+                  "expires_at": "2023-01-07T08:05:22.283+07:00"
+              }
+            }
+            this.$store.state.authenticated = true
+            this.$store.commit('setUser', data);
+            localStorage.setItem('user', JSON.stringify(data));
+            // this.$store.commit('setToken', res.data.token);
+            this.$router.push('/invitation');
+          }else {
+            this.$router.push('/confirmation/success/is_registered');
+          }
         } else {
-          this.error.message = res.data.message;
+          this.error.message = response.message;
         }
       }).catch(err => {
+        console.log(err);
         this.error.message = err.message;
       })
+    },
+
+    // login with email and password
+    async loginWithEmail(state) {
+      this.process.run = true;
+      this.error.message = '';
+      let isValid = null
+      if (state == "login") {
+        isValid = await this.$refs.observerLogin.validate();
+      }else {
+        isValid = await this.$refs.observerRegister.validate();
+      }
+      if(isValid) {
+        let data = {}
+        let endpoint = ""
+        if(state == "register") {
+          data = {
+            fullname: this.form.fullname,
+            email: this.form.email,
+            password: this.form.password,
+          }
+          endpoint = "auth/register"
+        }else {
+          data = {
+            email: this.form.email,
+            password: this.form.password,
+          }
+          endpoint = "auth/login/admin"
+        }
+        await post(endpoint, data).then((response) => {
+          console.log(response);
+          // let res = response.data
+          if (response.status == 200) {
+            if (state == "login") {
+              let data = {
+                "user": {
+                    "user_id": "string",
+                    "user_email": "superadmin@gmail.com",
+                    "user_role": "admin",
+                    "user_status": "active",
+                    "is_email_google": 0,
+                    "is_fill_personal":0
+                },
+                "credential": {
+                    "type": "bearer",
+                    "token": "Mg.oweFrE_squuHoZD7oFVT6rgWxfEsdxTxx78q5RCfFwaQu9W8tVvDZsAg2oIa",
+                    "expires_at": "2023-01-07T08:05:22.283+07:00"
+                }
+              }
+              this.$store.state.authenticated = true
+              this.$store.commit('setUser', data);
+              localStorage.setItem('user', JSON.stringify(data));
+              // this.$store.commit('setToken', res.data.token);
+              this.$router.push('/invitation');
+            }else {
+              this.$router.push('/confirmation/success/is_registered');
+            }
+          } else {
+            this.error.message = response.message;
+          }
+        }).catch(err => {
+          console.log(err);
+          this.error.message = err.message;
+        })
+      }
     },
   },
 

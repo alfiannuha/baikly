@@ -2,7 +2,9 @@ import Vue from 'vue';
 import Vuetify from 'vuetify/lib/framework';
 import { Ripple } from 'vuetify/lib/directives'
 
-Vue.use(Vuetify, {
+Vue.use(Vuetify);
+
+const opts = {
   directives: {
     Ripple
   },
@@ -18,7 +20,8 @@ Vue.use(Vuetify, {
   theme: {
     themes: {
       light: {
-        primary: '#23A6F0',
+        primary: '#0061FF',
+        // primary: '#23A6F0',
         secondary: '#b0bec5',
         accent: '#8c9eff',
         error: '#b71c1c',
@@ -27,8 +30,10 @@ Vue.use(Vuetify, {
         success: '#4caf50',
       },
     },
+    options: {
+      customProperties: true
+    },
   },
-});
+}
 
-export default new Vuetify({
-});
+export default new Vuetify(opts);

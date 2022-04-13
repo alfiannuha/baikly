@@ -237,6 +237,12 @@
   }
   ::placeholder {
     font-size: 16px !important;
+    color: #D6D6D6 !important;
+  }
+
+  .required .v-label--active::after {
+    content: ' * ';
+    color: red;
   }
   
   .apexcharts-toolbar {

@@ -1,6 +1,7 @@
 const Auth = () => import(/* webpackPrefetch: true */ '@/views/public/Auth.vue')
-// const Login = () => import(/* webpackPrefetch: true */ '@/views/public/Login.vue')
-// const Register = () => import(/* webpackPrefetch: true */ '@/views/public/Register.vue')
+const ConfirmationSuccess = () => import(/* webpackPrefetch: true */ '@/views/public/ConfirmationSuccess.vue')
+const EmailVerified = () => import(/* webpackPrefetch: true */ '@/views/public/EmailVerified.vue')
+const ForgotPassword = () => import(/* webpackPrefetch: true */ '@/views/public/ForgotPassword.vue')
 
 const routes = [
   {
@@ -11,22 +12,30 @@ const routes = [
       title: "Auth"
     }
   },
-  // {
-  //   path: "/login",
-  //   name: "login",
-  //   component: Login,
-  //   meta: {
-  //     title: "Login"
-  //   }
-  // },
-  // {
-  //   path: "/register",
-  //   name: "register",
-  //   component: Register,
-  //   meta: {
-  //     title: "Register"
-  //   }
-  // }
+  {
+    path: "/confirmation/success/:slug",
+    name: "Confirmation Success",
+    component: ConfirmationSuccess,
+    meta: {
+      title: "Confirmation Success"
+    }
+  },
+  {
+    path: "/email/verified",
+    name: "Email Verified",
+    component: EmailVerified,
+    meta: {
+      title: "Email Verified"
+    }
+  },
+  {
+    path: "/forgot/password",
+    name: "Forgot Password",
+    component: ForgotPassword,
+    meta: {
+      title: "Forgot Password"
+    }
+  },
 ]
 export default routes.map(route => {
   const meta = {

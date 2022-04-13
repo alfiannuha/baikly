@@ -4,6 +4,10 @@
       <v-main 
         min-height="100vh"
         light>
+        <!-- <v-img
+          style="position: absolute; top: 25px; left: 25px; width: 80px; height: 35px;"
+          :src="require('@/assets/img/baikly_logo.png')">
+        </v-img> -->
         <router-view />
       </v-main>
     <!-- <Footer 
@@ -38,9 +42,8 @@ export default {
   },
   watch: { 
     '$route' (to, from) {
-      // this.tokenFirebase()
       if(this.$route.path != '/auth'){
-        this.preventPrevilage()
+        // this.preventPrevilage()
       }
     } 
   },

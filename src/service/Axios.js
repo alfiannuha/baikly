@@ -54,7 +54,6 @@ export function request(method, url, config = {}, options = {}) {
   } = options;
 
   const baseURL = VUE_APP_BASE_URL;
-  const xauth = `Basic ${VUE_APP_ACCESS_KEY}` ;
 
   // @see: https://tools.ietf.org/html/rfc6750
   const bearerToken = `Bearer ${getAccessToken()}`;
@@ -171,7 +170,7 @@ export function requestUpload(method, url, config = {}, options = {}) {
   } = options;
 
   const baseURL = VUE_APP_BASE_URL;
-  const xauth = `Basic ${VUE_APP_ACCESS_KEY}` ;
+  // const xauth = `Basic ${VUE_APP_ACCESS_KEY}` ;
 
   // @see: https://tools.ietf.org/html/rfc6750
   // const bearerToken = `Bearer ${getAccessToken()}`;
@@ -278,7 +277,7 @@ export function requestMedia(method, url, config = {}, options = {}) {
   } = options;
 
   const baseURL = VUE_APP_BASE_URL;
-  const xauth = `Basic ${VUE_APP_ACCESS_KEY}` ;
+  // const xauth = `Basic ${VUE_APP_ACCESS_KEY}` ;
 
   // @see: https://tools.ietf.org/html/rfc6750
   // const bearerToken = `Bearer ${getAccessToken()}`;

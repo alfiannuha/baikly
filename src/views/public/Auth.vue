@@ -287,7 +287,8 @@ export default {
           const token = credential.accessToken;
           // The signed-in user info.
           const user = result.user;
-          this.loginGoogle(user)
+          // this.loginGoogle(user)
+          console.log(token);
           console.log(user);
           // ...
         }).catch((error) => {
@@ -370,32 +371,33 @@ export default {
             email: this.form.email,
             password: this.form.password,
           }
-          endpoint = "auth/login/admin"
+          endpoint = "auth/login"
         }
         await post(endpoint, data).then((response) => {
           console.log(response);
-          // let res = response.data
-          if (response.status == 200) {
+          let res = response.data
+          console.log(res);
+          if (res.status == 200) {
             if (state == "login") {
               let data = {
                 "user": {
-                    "user_id": "string",
-                    "user_email": "superadmin@gmail.com",
-                    "user_role": "admin",
-                    "user_status": "active",
+                    "name": "Alfian An - Naufal Nuha",
+                    "email": this.form.email,
+                    "role": "admin",
+                    "status": "active",
                     "is_email_google": 0,
-                    "is_fill_personal":0
+                    "is_fill_personal": 0
                 },
                 "credential": {
                     "type": "bearer",
-                    "token": "Mg.oweFrE_squuHoZD7oFVT6rgWxfEsdxTxx78q5RCfFwaQu9W8tVvDZsAg2oIa",
-                    "expires_at": "2023-01-07T08:05:22.283+07:00"
+                    "token": "Nw.iFH1SYBhsfuRazR7Ld0748ogVRHl0m9WDVFy_3nwlVzqUsf4wbXF_qKoiSJ2",
+                    "expires_at": "2022-04-18T02:44:57.838+00:00"
                 }
               }
               this.$store.state.authenticated = true
               this.$store.commit('setUser', data);
               localStorage.setItem('user', JSON.stringify(data));
-              // this.$store.commit('setToken', res.data.token);
+              this.$store.commit('setToken', data.credential.token);
               this.$router.push('/invitation');
             }else {
               this.$router.push('/confirmation/success/is_registered');

@@ -10,10 +10,6 @@
         </v-img> -->
         <router-view />
       </v-main>
-    <!-- <Footer 
-      v-if="$vuetify.breakpoint.name !== 'xs' 
-      && $vuetify.breakpoint.name !== 'sm' 
-      && $vuetify.breakpoint.name !== 'md'"/> -->
   </v-app>
 </template>
 

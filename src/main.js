@@ -12,6 +12,13 @@ import Lodash from "./plugins/Lodash.js"
 
 Vue.config.productionTip = false
 
+import { TokenService } from "@/service/Storage.Service.js"
+
+if (TokenService.getToken()) {
+  store.commit("setToken", TokenService.getToken())
+  store.commit("setUser", JSON.parse(TokenService.getUser()))
+}
+
 new Vue({
   router,
   store,

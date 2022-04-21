@@ -116,28 +116,15 @@ export default {
       const isValid = await this.$refs.observer.validate();
 
       if (isValid) {
-        await post(`auth/verification`, {
-          token: ""
+        await post(`auth/login`, {
+          email: this.form.email,
+          password: this.form.password,
         }).then((response) => {
-          if (response.status == 200) {
+          let res = response.data
+          if (res.code == 200) {
             this.$store.state.authenticated = true
-            let data = {
-              "user": {
-                  "user_id": "string",
-                  "user_email": "superadmin@gmail.com",
-                  "user_role": "admin",
-                  "user_status": "active",
-                  "is_email_google": 0,
-                  "is_fill_personal":0
-              },
-              "credential": {
-                  "type": "bearer",
-                  "token": "Mg.oweFrE_squuHoZD7oFVT6rgWxfEsdxTxx78q5RCfFwaQu9W8tVvDZsAg2oIa",
-                  "expires_at": "2023-01-07T08:05:22.283+07:00"
-              }
-            }
-            this.$store.commit('setUser', data);
-            localStorage.setItem('user', JSON.stringify(data));
+            this.$store.commit('setUser', res.data);
+            localStorage.setItem('user', JSON.stringify(res.data));
             this.$router.push('/profile/personal/info');
           }else {
             this.error = "Invalid token";

@@ -1,10 +1,9 @@
 import axios from "axios";
 import { mapKeys, mapValues, camelCase, snakeCase } from "lodash";
 import { TokenService } from "@/service/Storage.Service.js"
-import Config from "@/service/Config"
 import store from '@/store'
 
-const  VUE_APP_BASE_URL  = Config.checkDomain();
+const { VUE_APP_BASE_URL } = process.env
 
 function getAccessToken() {
   // @todo: load access token from cookie or locale storage
@@ -141,9 +140,7 @@ export function request(method, url, config = {}, options = {}) {
       url,
       params,
       data: data,
-      // headers: suppressAuth ? headers : { ...headers, Authorization: bearerToken, "x-api-key": xauth, "Content-Type": "application/x-www-form-urlencoded" },
-      // headers: suppressAuth ? headers : { ...headers, Token: bearerToken, "Content-Type": "application/json" },
-      headers: { Authorization: bearerToken, "Content-Type": "application/json" },
+      headers: suppressAuth ? headers : { ...headers, Authorization: bearerToken, "Content-Type": "application/json" },
       maxContentLength
     })
       .then((response) => {

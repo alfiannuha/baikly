@@ -2,27 +2,30 @@
   <v-dialog v-model="$store.state.dialogAuthAlert" persistent max-width="500">
 		<v-card class="rounded-xl">
 			<v-card-text>
-				<v-img src="@/assets/img/401.png"
-					class="ml-auto mr-auto"
-					max-width="400">
+				<v-img src="@/assets/img/500.svg"
+					max-height="200"
+          max-width="200"
+          class="ma-auto">
 				</v-img>
-				<p class="headline font-weight-bold text-center">Oops!</p>
-				<p class="font-weight-bold text-center mb-1 px-5" style="font-size: 1.1rem !important;">
-          {{ $store.state.ContentText == "" ? "Terkendala masalah koneksi. Silahkan periksa koneksi internet Anda" : $store.state.ContentText }}
+				<p class="headline font-weight-bold text-center text-h4">401</p>
+				<p class="font-weight-bold text-center mb-1 px-5" style="font-size: 14px !important;">
+          Your request is unauthorized. Please login to continue.
+
+          <!-- {{ $store.state.ContentText == "" ? "Terkendala masalah koneksi. Silahkan periksa koneksi internet Anda" : $store.state.ContentText }} -->
         </p>
-        <div class="font-weight-bold text-center mb-1" style="font-size: 1.1rem !important;">
+        <!-- <div class="font-weight-bold text-center mb-1" style="font-size: 14px !important;">
           {{ $store.state.ContentValidation.question_text }}
-        </div>
+        </div> -->
 			</v-card-text>
-      <v-card-actions class="pb-5 mx-3">
-        <v-spacer></v-spacer>
+      <v-card-actions class="pb-5 mx-3 justify-center">
         <v-btn
-          width="150"
-          depressed
-          color="#F05326"
+          outlined
+          width="200"
+          large
+          color="primary"
           class="text-capitalize white--text"
           @click="action">
-          Oke
+          Refresh
         </v-btn>
       </v-card-actions>
 		</v-card>

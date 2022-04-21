@@ -172,11 +172,12 @@ export default {
   data() {
     return {
       form: {
+        email: "",
         title_job: 'Dokter',
+        fullname: "",
+        password: "",
         phone_number: '0877838838383',
         gender: 'male',
-        company_name: 'yureka',
-        total_employees: '',
       },
       genders: ["Male", "Women"],
       process: {
@@ -204,18 +205,18 @@ export default {
 
       if (isValid) {
         await post(`auth/personal-info`, {
+            email: this.form.email,
             job_title : this.form.title_job,
+            password : this.form.password,
             mobilephone : this.form.phone_number,
             gender : this.form.gender,
-            company_name : this.form.company_name,
-            total_employee : this.form.total_employees ? this.form.total_employees : 2
         }).then(response => {
           let res = response.data
           if(res.code == 200) {
             this.$refs.snackbar.open("#000000", `You successfully add personal info`);
             this.$store.state.authenticated = true
             setTimeout(() => {
-              this.$router.push('/invitation');
+              this.$router.push('/email/verified');
             },2000)
           }else {
             this.$refs.snackbar.open("#000000", `You failed to add personal info. Try again`, "mdi-close-circle-outline", "#E74040");

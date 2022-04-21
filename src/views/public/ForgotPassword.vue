@@ -110,7 +110,8 @@ export default {
         await post(`auth/forgot-password`, {
           email: this.form.email,
         }).then(response => {
-          if (response.status == 200) {
+          let res = response.data
+          if (res.code == 200) {
             this.showChangePassword = true;
           }else {
             this.error.message = "invalid email format";

@@ -123,7 +123,9 @@ export default {
       const isValid = await this.$refs.observer.validate();
 
       if (isValid) {
-        await post(``, {
+        await post(`auth/reset-password`, {
+          email: this.$router.query.params.email,
+          token: this.$router.query.params.token,
           password: this.form.newpassword,
           re_password: this.form.confirmnewpassword,
         }).then(response => {

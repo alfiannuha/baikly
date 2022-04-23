@@ -783,7 +783,6 @@ export default {
       this.form.id = id
     },
     fetch() {
-      console.log(this.searching);
     },
     addEmployees() {
       this.$router.push('/invitation/create')

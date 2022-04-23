@@ -22,6 +22,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const authenticated = store.state.authenticated
+  const user = store.state.user
   const isAll = to.matched.some(record => record.meta.all)
   const onlyLoggedOut = to.matched.some(record => record.meta.onlyLoggedOut)
   const isPublic = to.matched.some(record => record.meta.public)
@@ -31,7 +32,11 @@ router.beforeEach((to, from, next) => {
       path: "/login",
     })
   }
-  if (authenticated && onlyLoggedOut) {
+  if (authenticated && onlyLoggedOut && user.user.is_fill_personal == 0) {
+    return next("/profile/personal/info")
+  }
+
+  if (authenticated && onlyLoggedOut && user.user.is_fill_personal == 1) {
       return next("/")
   }
   document.title = `BAIKLY | ${to.meta.title}`

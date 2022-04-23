@@ -205,7 +205,6 @@ export default {
   methods: {
     // login with email and password
     async save() {
-      console.log(this.form);
       this.process.run = true;
       this.error.message = '';
 
@@ -234,7 +233,6 @@ export default {
           }
         }).catch(error => {
           this.process.run = false;
-          console.log(error);
         })
       }else {
         this.process.run = false;

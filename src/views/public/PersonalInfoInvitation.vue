@@ -197,7 +197,6 @@ export default {
   methods: {
     // login with email and password
     async save() {
-      console.log(this.form);
       this.process.run = true;
       this.error.message = '';
 
@@ -222,10 +221,10 @@ export default {
             this.$refs.snackbar.open("#000000", `You failed to add personal info. Try again`, "mdi-close-circle-outline", "#E74040");
           }
         }).catch(error => {
-          console.log(error);
+          this.process.run = false;
+          this.error.message = error.message;
         })
       }else {
-        console.log('invalid');
         this.process.run = false;
       }
 

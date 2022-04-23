@@ -99,7 +99,7 @@ export default {
   },
   methods: {
     verifyCallback(res) {
-      console.log('callback captcha',res);
+      // console.log('callback captcha',res);
       this.form.captcha = res;
     },
     async save() {

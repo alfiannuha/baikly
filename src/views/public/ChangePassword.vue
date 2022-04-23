@@ -151,7 +151,6 @@ export default {
           }
         }).catch(error => {
            this.process.run = false;
-          console.log(error);
         })
       }else {
         this.process.run = false;

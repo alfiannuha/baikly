@@ -155,9 +155,9 @@ data() {
           const token = credential.accessToken;
           // The signed-in user info.
           const user = result.user;
-          console.log('credential',credential);
-          console.log('token',token);
-          console.log('user_data',user);
+          // console.log('credential',credential);
+          // console.log('token',token);
+          // console.log('user_data',user);
           this.loginGoogle(user)
           // ...
         }).catch((error) => {
@@ -198,7 +198,7 @@ data() {
           this.error.message = res.errors[0].error;
         }
       }).catch(err => {
-        console.log(err);
+        this.process.run = false;
         this.error.message = err.message;
       })
     },
@@ -215,9 +215,7 @@ data() {
             password: this.form.password,
           }
         }).then((response) => {
-          console.log(response);
           let res = response.data
-          console.log(res.data.user.is_fill_personal);
           if (res.code == 201) {
               this.process.run = false;
               TokenService.saveToken(

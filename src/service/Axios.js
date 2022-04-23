@@ -77,7 +77,7 @@ export function request(method, url, config = {}, options = {}) {
       return response;
     },
     function (error) {
-      console.log(error.response.data);
+      // console.log(error.response.data);
       // Any status codes that falls outside the range of 2xx cause this function to trigger
       // Do something with response error
       if (error.response) {
@@ -103,7 +103,7 @@ export function request(method, url, config = {}, options = {}) {
 
           return;
         } else if (error.response.data.status == 400) {
-          console.log(error.response.data.validation);
+          // console.log(error.response.data.validation);
           // If request 400 (failed)
           store.state.dialogAuthAlert = true
           store.state.process.run = false

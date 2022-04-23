@@ -158,7 +158,7 @@ export default {
               res.data.credential.token,
               JSON.stringify(res.data)
             );
-            this.$router.push('/profile/personal/info');
+            window.location = '/profile/personal/info'
           }else {
             this.error.message = res.errors[0].error;
             this.process.run = false;

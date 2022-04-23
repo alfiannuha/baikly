@@ -36,21 +36,23 @@ export default {
   },
   mounted () {
     this.slug = this.$route.params.slug
+    let email = this.$route.query.email
     this.title = this.slug == "is_registered" ? "Registration Successfully" : "Changed successfully"
     this.description = this.slug == "is_registered" ?
-     "Thank you! We have sent you email to bayuhernawan@gmail.com. Please click the link in that message to complete your data."
+     `Thank you! We have sent you email to ${email}. Please click the link in that message to complete your data.`
      :
      "Your password has been successfully changed.Use your new password to login!"
   },
   methods: {
     goTo() {
-      if (this.slug == 'is_registered') {
-        this.$router.push('/email/verified')
-      }
+      window.location = '/login'
+      // if (this.slug == 'is_registered') {
+      //   this.$router.push('/email/verified')
+      // }
 
-      if (this.slug == 'is_changed_password') {
-        this.$router.push('/login')
-      }
+      // if (this.slug == 'is_changed_password') {
+      //   this.$router.push('/login')
+      // }
     }
   }
 }

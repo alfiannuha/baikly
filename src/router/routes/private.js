@@ -28,7 +28,7 @@ const routes = [
   },
   {
     path: "/profile/personal/info",
-    name: "profile-personal-info",
+    name: "Personal Info",
     component: PersonalInfo,
     meta: {
       title: "Personal Info"

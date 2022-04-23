@@ -217,7 +217,7 @@ data() {
         }).then((response) => {
           console.log(response);
           let res = response.data
-          console.log(res);
+          console.log(res.data.user.is_fill_personal);
           if (res.code == 201) {
               this.process.run = false;
               TokenService.saveToken(
@@ -225,9 +225,9 @@ data() {
                 JSON.stringify(res.data)
               );
               if (res.data.user.is_fill_personal == 0) {
-                window.location = '/invitation'
+                window.location = '/profile/personal/info'
               }else {
-                window.location = '/'
+                window.location = '/invitation'
               }
           } else {
             this.process.run = false;

@@ -2,12 +2,12 @@
   <v-app>
     <Navbar
       v-if="
-        $route.name != 'Auth' ||
-        $route.name != 'Confirmation Success' ||
-        $route.name != 'Email Verified' ||
-        $route.name != 'Forgot Password' ||
-        $route.name != 'Personal Info Invitation' ||
-        $route.name != 'profile-personal-info'"/>
+        $route.name != 'Auth' &&
+        $route.name != 'Confirmation Success' &&
+        $route.name != 'Email Verified' &&
+        $route.name != 'Forgot Password' &&
+        $route.name != 'Personal Info Invitation' &&
+        $route.name != 'Personal Info'"/>
       <v-main 
         min-height="100vh"
         style="background-color: #fafafa;"

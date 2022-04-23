@@ -144,7 +144,7 @@ export default {
           if (res.code == 201) {
              this.process.run = false;
             this.$refs.snackbar.open("#000000", `You successfully reset password`);
-            this.$router.push('/confirmation/success/is_changed_password');
+            window.location = '/confirmation/success/is_changed_password'
           }else {
             this.process.run = false;
             this.error.message = res.errors[0].error;

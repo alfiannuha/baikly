@@ -5,7 +5,7 @@
 
     <div
       class="d-flex align-center justify-center text-center">
-      <v-card width="610px" :height="user.user.is_email_google == 1 ? '720px' : '680px'" class="mt-10 rounded-xl box-shadow == 1">
+      <v-card width="610px" :height="user.is_email_google == 1 ? '720px' : '680px'" class="mt-10 rounded-xl box-shadow == 1">
         <v-card-text style="padding-right: 50px; padding-left: 50px;">
 
           <div class="text-h5 text-first mt-5 font-weight-bold" style="margin-bottom: 20px">
@@ -14,7 +14,7 @@
           <div>
             <ValidationObserver ref="observer">
               <v-form class="text-left">
-                <div v-show="user.user.is_email_google == 1">
+                <div v-show="user.is_email_google == 1">
                   <ValidationProvider
                     name="Password"
                     rules="min:8"
@@ -199,7 +199,7 @@ export default {
   },
   computed: {
     user() {
-      return JSON.parse(localStorage.getItem('user'));
+      return JSON.parse(localStorage.getItem('access_user')).user;
     }
   },
   methods: {

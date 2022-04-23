@@ -127,121 +127,6 @@
       </v-row>
     </v-expand-x-transition>
 
-    <!-- LOGIN -->
-    <!-- <v-expand-x-transition mode="out-in">
-      <v-row no-gutters>
-        <v-col
-          cols="8"
-          class="text-center justify-center" style="padding: 0 16% 0 16%">
-          <div
-            class="d-flex-row align-center justify-center text-center">
-            <div class="color-default text-h3 mt-16 mb-8">
-              Welcome to BAIKLY
-            </div>
-            <v-btn
-              large
-              elevation="0"
-              outlined
-              block
-              @click="loginWithGoogle('login')"
-              class="font-weight-medium text-capitalize"
-            >
-              <img :src="require('@/assets/img/sosmed/login_google.png')"  width="20px" class="mr-4" />
-              Continue with Google
-            </v-btn>
-            <p class="text-third font-weight-normal mb-10 mt-10">
-              or use your email account
-            </p>
-
-            <ValidationObserver ref="observerLogin">
-              <v-form class="text-left mb-5">
-                <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
-                  <div class="text-color mb-2">Email</div>
-                  <v-text-field
-                    v-on:keyup.enter="loginWithEmail('login')" 
-                    outlined
-                    dense
-                    autocomplete="off"
-                    single-line
-                    color="primary"
-                    type="email"
-                    placeholder="example@gmail.com"
-                    v-model="form.email"
-                    :error-messages="errors"
-                    required>
-                  </v-text-field>
-                </ValidationProvider>
-                <ValidationProvider
-                  name="Password"
-                  rules="required|min:8"
-                  v-slot="{ errors }">
-                  <div class="text-color mb-2">Password</div>
-                  <v-text-field
-                    v-on:keyup.enter="loginWithEmail('login')"
-                    class="mt-2 mb-1"
-                    outlined
-                    color="primary"
-                    dense
-                    autocomplete="off"
-                    single-line
-                    placeholder="8+ character"
-                    v-model="form.password"
-                    :type="show ? 'text' : 'password'"
-                    :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                    @click:append="show = !show"
-                    :error-messages="errors"
-                    required>
-                  </v-text-field>
-                </ValidationProvider>
-              </v-form>
-            </ValidationObserver>
-            <div class="text-center justify-center">
-              <v-alert type="error" text dense prominent 
-                v-show="error.message.length > 0"
-                v-html="error.message">
-              </v-alert>
-              <v-btn class="text-second subtitle-2 mb-7 text-capitalize" to="/forgot/password" text x-small>
-                Forgot password?
-              </v-btn>
-              <v-btn
-                block
-                x-large
-                elevation="0"
-                color="primary"
-                :disabled="$store.state.process.run"
-                :loading="$store.state.process.run"
-                v-on:keyup.enter="loginWithEmail('login')"
-                @click="loginWithEmail('login')"
-                class="white--text text-capitalize">
-                Log In
-              </v-btn>
-            </div>
-          </div>
-        </v-col>
-        <v-col cols="4" class="text-center" style="background-color: #f3f3f3">
-          <v-img
-            :src="require('@/assets/img/login_background.png')" style="height: 100vh;">
-            <div class="justify-center text-center px-16 mx-10" style="position: absolute;top: 40%;">
-              <div class="font-weight-normal text-h4">
-                Hi, friend!
-              </div>
-              <div class="my-4">
-                Enter your personal details
-                and start your journey with us 
-              </div>
-              <div class="g-signin2" data-onsuccess="onSignIn"></div>
-              <v-btn large color="#23A6F0" outlined class="mt-6" @click="isShow = true; $refs.observerRegister.reset()">
-                Sign Up
-              </v-btn>
-            </div>
-          </v-img>
-          <v-img
-            style="position: absolute; top: 25px; left: 25px; width: 80px; height: 35px;"
-            :src="require('@/assets/img/baikly_logo.png')">
-          </v-img>
-        </v-col>
-      </v-row>
-    </v-expand-x-transition> -->
   </div>
 </template>
 
@@ -311,7 +196,7 @@ export default {
       }).then((response) => {
         let res = response.data
         if (res.code == 201) {
-          window.location = '/confirmation/success/is_registered'
+          window.location = `/confirmation/success/is_registered?email=${user.email}`;
         } else {
           this.error.message = res.errors[0].error;
         }
@@ -339,7 +224,7 @@ export default {
           console.log(res);
           if (res.code == 201) {
             this.process.run = false;
-            window.location = '/confirmation/success/is_registered'
+            window.location = `/confirmation/success/is_registered?email=${this.form.email}`
           } else {
             this.process.run = false;
             this.error.message = res.errors[0].error;

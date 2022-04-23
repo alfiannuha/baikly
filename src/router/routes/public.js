@@ -1,4 +1,5 @@
-const Auth = () => import(/* webpackPrefetch: true */ '@/views/public/Auth.vue')
+const Register = () => import(/* webpackPrefetch: true */ '@/views/public/Register.vue')
+const Login = () => import(/* webpackPrefetch: true */ '@/views/public/Login.vue')
 const ConfirmationSuccess = () => import(/* webpackPrefetch: true */ '@/views/public/ConfirmationSuccess.vue')
 const EmailVerified = () => import(/* webpackPrefetch: true */ '@/views/public/EmailVerified.vue')
 const ForgotPassword = () => import(/* webpackPrefetch: true */ '@/views/public/ForgotPassword.vue')
@@ -6,11 +7,19 @@ const PersonalInfoInvitation = () => import(/* webpackPrefetch: true */ '@/views
 
 const routes = [
   {
-    path: "/auth",
-    name: "Auth",
-    component: Auth,
+    path: "/register",
+    name: "Register",
+    component: Register,
     meta: {
-      title: "Auth"
+      title: "Register"
+    }
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
+    meta: {
+      title: "Login"
     }
   },
   {

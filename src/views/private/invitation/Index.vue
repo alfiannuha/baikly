@@ -20,6 +20,12 @@
             Update Employee
           </div>
         </div>
+
+        <div v-if="$store.state.dialog.type == 'delete'">
+          <div class="text-h5 font-weight-bold">
+            Confirmation
+          </div>
+        </div>
       </template>
 
       <!-- CONTENT -->
@@ -264,6 +270,12 @@
             </v-form>
           </ValidationObserver>
         </div>
+
+        <div v-if="$store.state.dialog.type == 'delete'">
+          <div class="text-color font-weight-normal">
+            Are you sure to delete this employee ?
+          </div>
+        </div>
       </template>
 
       <!-- ACTIONS -->
@@ -274,7 +286,7 @@
             color="primary"
             class="white--text text-capitalize pa-5 mr-4"
             depressed
-            @click="closeEdit()"
+            @click="closeDialog('edit')"
             outlined>
             Cancel
           </v-btn>
@@ -283,6 +295,24 @@
             class="white--text text-capitalize pa-5"
             depressed>
             Submit
+          </v-btn>
+        </div>
+
+        <div v-if="$store.state.dialog.type == 'delete'" class="pa-4">
+          <v-btn
+            color="primary"
+            class="white--text text-capitalize pa-5 mr-4"
+            depressed
+            @click="closeDialog('delete')"
+            outlined>
+            Cancel
+          </v-btn>
+          <v-btn
+            color="#E74040"
+            class="white--text text-capitalize pa-5"
+            depressed
+            @click="deleted(form.id)">
+            Delete
           </v-btn>
         </div>
       </template>
@@ -403,6 +433,7 @@ export default {
   data() {
     return {
       form: {
+        id: '',
         name: '',
         email: '',
         job_title: '',
@@ -448,6 +479,96 @@ export default {
         run: false
       },
       list: [
+        {
+          name: 'Alfian Nuha',
+          email: 'alfian.nuha@gmail.com',
+          job_title: 'Front End Dev',
+          gender: 'Male',
+          phone: '0812-3456-7890',
+          role: 'Admin',
+          status: 'Active'
+        },
+        {
+          name: 'Bayu Hermawan',
+          email: 'bayuhermawan@gmail.com',
+          job_title: 'Back End Dev',
+          gender: 'Male',
+          phone: '0812-3456-7890',
+          role: 'Admin',
+          status: 'Inactive'
+        },
+        {
+          name: 'Alfian Nuha',
+          email: 'alfian.nuha@gmail.com',
+          job_title: 'Front End Dev',
+          gender: 'Male',
+          phone: '0812-3456-7890',
+          role: 'Admin',
+          status: 'Active'
+        },
+        {
+          name: 'Bayu Hermawan',
+          email: 'bayuhermawan@gmail.com',
+          job_title: 'Back End Dev',
+          gender: 'Male',
+          phone: '0812-3456-7890',
+          role: 'Admin',
+          status: 'Inactive'
+        },
+        {
+          name: 'Alfian Nuha',
+          email: 'alfian.nuha@gmail.com',
+          job_title: 'Front End Dev',
+          gender: 'Male',
+          phone: '0812-3456-7890',
+          role: 'Admin',
+          status: 'Active'
+        },
+        {
+          name: 'Bayu Hermawan',
+          email: 'bayuhermawan@gmail.com',
+          job_title: 'Back End Dev',
+          gender: 'Male',
+          phone: '0812-3456-7890',
+          role: 'Admin',
+          status: 'Inactive'
+        },
+        {
+          name: 'Alfian Nuha',
+          email: 'alfian.nuha@gmail.com',
+          job_title: 'Front End Dev',
+          gender: 'Male',
+          phone: '0812-3456-7890',
+          role: 'Admin',
+          status: 'Active'
+        },
+        {
+          name: 'Bayu Hermawan',
+          email: 'bayuhermawan@gmail.com',
+          job_title: 'Back End Dev',
+          gender: 'Male',
+          phone: '0812-3456-7890',
+          role: 'Admin',
+          status: 'Inactive'
+        },
+        {
+          name: 'Alfian Nuha',
+          email: 'alfian.nuha@gmail.com',
+          job_title: 'Front End Dev',
+          gender: 'Male',
+          phone: '0812-3456-7890',
+          role: 'Admin',
+          status: 'Active'
+        },
+        {
+          name: 'Bayu Hermawan',
+          email: 'bayuhermawan@gmail.com',
+          job_title: 'Back End Dev',
+          gender: 'Male',
+          phone: '0812-3456-7890',
+          role: 'Admin',
+          status: 'Inactive'
+        },
         {
           name: 'Alfian Nuha',
           email: 'alfian.nuha@gmail.com',
@@ -655,7 +776,11 @@ export default {
   },
   methods: {
     confirmation(id){
-      this.list.splice(id, 1);
+      this.$store.state.dialog.container = true
+      // this.$store.state.dialog.title = 'Edit Employee'
+      this.$store.state.dialog.type = 'delete'
+      this.$store.state.dialog.width = 500
+      this.form.id = id
     },
     fetch() {
       console.log(this.searching);
@@ -678,8 +803,9 @@ export default {
         status: item.status,
       }
     },
-    closeEdit() {
+    closeDialog(state) {
       this.form = {
+        id: '',
         name: '',
         email: '',
         job_title: '',
@@ -688,8 +814,9 @@ export default {
         role: 'staff',
         status: 'active',
       }
-
-      this.$refs.observerEdit.reset()
+      if(state == 'edit') {
+        this.$refs.observerEdit.reset()
+      }
       this.$store.state.dialog.container = false
       this.$store.state.dialog.title = ''
       this.$store.state.dialog.type = ''
@@ -708,6 +835,12 @@ export default {
         role: item.role,
         status: item.status,
       }
+    },
+
+
+    deleted() {
+      this.list.splice(this.form.id, 1)
+      this.closeDialog('delete')
     }
   }
 }

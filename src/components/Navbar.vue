@@ -184,9 +184,10 @@
       v-model="drawer"
       fixed
       app
-      v-if="$route.name !== '/auth'">
+      v-if="$route.name !== 'Login'">
       <v-list-item class="px-2" style="margin-bottom:7px">
-        <v-img 
+        <v-img  
+          class="ml-3 mt-3"
           style="position: absolute; width: 80px; height: 35px;"
           :src="require('@/assets/img/baikly_logo.png')">
         </v-img>
@@ -404,7 +405,7 @@
         //   if (res.code == 201) {
             TokenService.removeToken()
             localStorage.clear();
-            window.location = '/auth'
+            window.location = '/login'
         //   }else {
         //     this.dialog.logout = true;
         //   }

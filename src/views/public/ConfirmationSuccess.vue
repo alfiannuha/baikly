@@ -49,7 +49,7 @@ export default {
       }
 
       if (this.slug == 'is_changed_password') {
-        this.$router.push('/auth?slug=is_login')
+        this.$router.push('/login')
       }
     }
   }

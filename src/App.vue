@@ -42,7 +42,7 @@ export default {
   },
   watch: { 
     '$route' (to, from) {
-      if(this.$route.path != '/auth'){
+      if(this.$route.path != '/login'){
         // this.preventPrevilage()
       }
     } 
@@ -51,7 +51,7 @@ export default {
     preventPrevilage(){
       if(!TokenService.getToken()){
         TokenService.removeToken()
-        window.location = '/auth'
+        window.location = '/login'
       }
     }
   }

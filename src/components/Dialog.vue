@@ -8,7 +8,7 @@
           mdi-close
         </v-icon>
       </v-card-title>
-      <v-card-text style="max-height: 650px;">
+      <v-card-text style="max-height: 700px;">
         <slot name="content"/>
       </v-card-text>
       <v-card-actions>

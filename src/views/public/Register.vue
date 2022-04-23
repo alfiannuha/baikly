@@ -2,7 +2,7 @@
   <div style="min-height: 100vh;">
     <!-- REGISTER -->
     <v-expand-x-transition mode="in-out">
-      <v-row no-gutters v-show="isShow">
+      <v-row no-gutters>
         <v-col cols="4" class="text-center" style="background-color: #f3f3f3">
           <v-img
             :src="require('@/assets/img/login_background.png')" style="height: 100vh;">
@@ -14,7 +14,7 @@
                 To keep connected with us please
                 login with your personal info
               </div>
-              <v-btn large color="#23A6F0" outlined class="mt-6" @click="isShow = false;$refs.observerLogin.reset()">
+              <v-btn large color="#23A6F0" outlined class="mt-6" @click="$router.push('/login')">
                 Log in
               </v-btn>
             </div>
@@ -128,8 +128,8 @@
     </v-expand-x-transition>
 
     <!-- LOGIN -->
-    <v-expand-x-transition mode="out-in">
-      <v-row no-gutters v-show="!isShow">
+    <!-- <v-expand-x-transition mode="out-in">
+      <v-row no-gutters>
         <v-col
           cols="8"
           class="text-center justify-center" style="padding: 0 16% 0 16%">
@@ -241,7 +241,7 @@
           </v-img>
         </v-col>
       </v-row>
-    </v-expand-x-transition>
+    </v-expand-x-transition> -->
   </div>
 </template>
 
@@ -255,7 +255,6 @@ const provider = new GoogleAuthProvider();
 export default {
   data() {
     return {
-      isShow: true,
       form: {
         fullname: '',
         email: '',
@@ -271,15 +270,10 @@ export default {
     }
   },
   mounted() {
-    let slug = this.$route.query.slug;
-
-    if (slug == "is_login") {
-      this.isShow = false;
-    }
   },
   methods: {
     // login with google
-    loginWithGoogle(state) {
+    loginWithGoogle() {
       const auth = getAuth();
       signInWithPopup(auth, provider)
         .then((result) => {
@@ -291,7 +285,7 @@ export default {
           console.log('credential',credential);
           console.log('token',token);
           console.log('user_data',user);
-          this.loginGoogle(state, user)
+          this.loginGoogle(user)
           // ...
         }).catch((error) => {
           // Handle Errors here.
@@ -305,7 +299,7 @@ export default {
         });
     },
     // login with google / sso
-    async loginGoogle(state, user) {
+    async loginGoogle(user) {
       this.process.run = true;
 
       await post(`auth/login-google`, {
@@ -317,17 +311,9 @@ export default {
       }).then((response) => {
         let res = response.data
         if (res.code == 201) {
-          if (state == "login") {
-            TokenService.saveToken(
-              res.data.token,
-              JSON.stringify(res.data.profile)
-            );
-            this.$router.push('/invitation');
-          }else {
-            this.$router.push('/confirmation/success/is_registered');
-          }
+          window.location = '/confirmation/success/is_registered'
         } else {
-          this.error.message = response.message;
+          this.error.message = res.errors[0].error;
         }
       }).catch(err => {
         console.log(err);
@@ -339,47 +325,21 @@ export default {
     async loginWithEmail(state) {
       this.process.run = true;
       this.error.message = '';
-      let isValid = null
-      if (state == "login") {
-        isValid = await this.$refs.observerLogin.validate();
-      }else {
-        isValid = await this.$refs.observerRegister.validate();
-      }
+      let isValid =  await this.$refs.observerRegister.validate();
       if(isValid) {
-        let data = {}
-        let endpoint = ""
-        if(state == "register") {
-          data = {
+        await post(`auth/register/admin`, {
+          data: {
             name: this.form.fullname,
             email: this.form.email,
             password: this.form.password,
           }
-          endpoint = "auth/register/admin"
-        }else {
-          data = {
-            email: this.form.email,
-            password: this.form.password,
-          }
-          endpoint = "auth/login/admin"
-        }
-        await post(endpoint, {
-          data
         }).then((response) => {
           console.log(response);
           let res = response.data
           console.log(res);
           if (res.code == 201) {
-            if (state == "login") {
-              this.process.run = false;
-              TokenService.saveToken(
-                res.data.credential.token,
-                JSON.stringify(res.data)
-              );
-              window.location = '/invitation'
-              // this.$router.push('/invitation');
-            }else {
-              this.$router.push('/confirmation/success/is_registered');
-            }
+            this.process.run = false;
+            window.location = '/confirmation/success/is_registered'
           } else {
             this.process.run = false;
             this.error.message = res.errors[0].error;

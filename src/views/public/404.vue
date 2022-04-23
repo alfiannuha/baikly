@@ -22,7 +22,7 @@
         elevation="0"
         class="white--text text-capitalize"
         to="/">
-        Go Back
+        Refresh
       </v-btn>
     </div>
   </div>

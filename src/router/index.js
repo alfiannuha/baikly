@@ -25,12 +25,6 @@ router.beforeEach((to, from, next) => {
   const isAll = to.matched.some(record => record.meta.all)
   const onlyLoggedOut = to.matched.some(record => record.meta.onlyLoggedOut)
   const isPublic = to.matched.some(record => record.meta.public)
-
-  // if (from.meta.prevent_move) {
-  //   alert("Mohon maaf, anda tidak bisa meninggalkan halaman ini");
-  //   return next(false);
-  // }
-  
   
   if (!isAll && !isPublic && !authenticated) {
     return next({

@@ -96,6 +96,16 @@ export default {
   components: {
     Snackbar
   },
+  props: {
+    email: {
+      type: String,
+      default: ""
+    },
+    code: {
+      type: String,
+      default: ""
+    }
+  },
   data() {
     return {
       form: {
@@ -113,8 +123,7 @@ export default {
       show: false,
     }
   },
-  mounted () {
-  },
+  mounted () {},
   methods: {
     async savePassword() {
       this.process.run = true;
@@ -124,18 +133,24 @@ export default {
 
       if (isValid) {
         await post(`auth/reset-password`, {
-          email: this.$router.query.params.email,
-          token: this.$router.query.params.token,
-          password: this.form.newpassword,
-          re_password: this.form.confirmnewpassword,
+          data: {
+            email: this.email,
+            code: this.code,
+            password: this.form.newpassword,
+            re_password: this.form.confirmnewpassword,
+          }
         }).then(response => {
-          if (response.status == 200) {
+          let res = response.data;
+          if (res.code == 201) {
+             this.process.run = false;
             this.$refs.snackbar.open("#000000", `You successfully reset password`);
             this.$router.push('/confirmation/success/is_changed_password');
           }else {
-            this.error.message = response.message;
+            this.process.run = false;
+            this.error.message = res.errors[0].error;
           }
         }).catch(error => {
+           this.process.run = false;
           console.log(error);
         })
       }else {

@@ -1,6 +1,18 @@
 const webpack = require("webpack")
 
 module.exports = {
+  devServer: {
+    proxy: {
+      // proxy all requests starting with /api to jsonplaceholder
+      '/v1': {
+        target: 'https://bebaik.gregetkreatif.com',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/v1': ''
+        }
+      }
+    }
+  },
   transpileDependencies: [
     'vuetify'
   ],

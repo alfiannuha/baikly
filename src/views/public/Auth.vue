@@ -37,7 +37,7 @@
               elevation="0"
               outlined
               block
-              @click="loginWithGoogle()"
+              @click="loginWithGoogle('register')"
               class="font-weight-medium text-capitalize"
             >
               <img :src="require('@/assets/img/sosmed/login_google.png')"  width="20px" class="mr-4" />
@@ -143,7 +143,7 @@
               elevation="0"
               outlined
               block
-              @click="loginWithGoogle()"
+              @click="loginWithGoogle('login')"
               class="font-weight-medium text-capitalize"
             >
               <img :src="require('@/assets/img/sosmed/login_google.png')"  width="20px" class="mr-4" />
@@ -249,6 +249,7 @@
 import firebaseapp from "../../plugins/Firebase"
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { post } from "@/service/Axios";
+import { TokenService } from "@/service/Storage.Service";
 
 const provider = new GoogleAuthProvider();
 export default {
@@ -278,7 +279,7 @@ export default {
   },
   methods: {
     // login with google
-    loginWithGoogle() {
+    loginWithGoogle(state) {
       const auth = getAuth();
       signInWithPopup(auth, provider)
         .then((result) => {
@@ -287,9 +288,10 @@ export default {
           const token = credential.accessToken;
           // The signed-in user info.
           const user = result.user;
-          // this.loginGoogle(user)
-          console.log(token);
-          console.log(user);
+          console.log('credential',credential);
+          console.log('token',token);
+          console.log('user_data',user);
+          this.loginGoogle(state, user)
           // ...
         }).catch((error) => {
           // Handle Errors here.
@@ -303,36 +305,23 @@ export default {
         });
     },
     // login with google / sso
-    async loginGoogle(user) {
+    async loginGoogle(state, user) {
       this.process.run = true;
 
-      let data = {
-        email: user.email,
-        fullname: user.displayName,
-      }
-      await post(`auth/login-sso`, data).then((response) => {
-        // let res = response.data
-        if (response.status == 200) {
+      await post(`auth/login-google`, {
+        data: {
+          account_id: user.uid,
+          email: user.email,
+          fullname: user.displayName,
+        }
+      }).then((response) => {
+        let res = response.data
+        if (res.code == 201) {
           if (state == "login") {
-            let data = {
-              "user": {
-                  "user_id": "string",
-                  "user_email": "superadmin@gmail.com",
-                  "user_role": "admin",
-                  "user_status": "active",
-                  "is_email_google": 0,
-                  "is_fill_personal":0
-              },
-              "credential": {
-                  "type": "bearer",
-                  "token": "Mg.oweFrE_squuHoZD7oFVT6rgWxfEsdxTxx78q5RCfFwaQu9W8tVvDZsAg2oIa",
-                  "expires_at": "2023-01-07T08:05:22.283+07:00"
-              }
-            }
-            this.$store.state.authenticated = true
-            this.$store.commit('setUser', data);
-            localStorage.setItem('user', JSON.stringify(data));
-            // this.$store.commit('setToken', res.data.token);
+            TokenService.saveToken(
+              res.data.token,
+              JSON.stringify(res.data.profile)
+            );
             this.$router.push('/invitation');
           }else {
             this.$router.push('/confirmation/success/is_registered');
@@ -361,54 +350,46 @@ export default {
         let endpoint = ""
         if(state == "register") {
           data = {
-            fullname: this.form.fullname,
+            name: this.form.fullname,
             email: this.form.email,
             password: this.form.password,
           }
-          endpoint = "auth/register"
+          endpoint = "auth/register/admin"
         }else {
           data = {
             email: this.form.email,
             password: this.form.password,
           }
-          endpoint = "auth/login"
+          endpoint = "auth/login/admin"
         }
-        await post(endpoint, data).then((response) => {
+        await post(endpoint, {
+          data
+        }).then((response) => {
           console.log(response);
           let res = response.data
           console.log(res);
-          if (res.status == 200) {
+          if (res.code == 201) {
             if (state == "login") {
-              let data = {
-                "user": {
-                    "name": "Alfian An - Naufal Nuha",
-                    "email": this.form.email,
-                    "role": "admin",
-                    "status": "active",
-                    "is_email_google": 0,
-                    "is_fill_personal": 0
-                },
-                "credential": {
-                    "type": "bearer",
-                    "token": "Nw.iFH1SYBhsfuRazR7Ld0748ogVRHl0m9WDVFy_3nwlVzqUsf4wbXF_qKoiSJ2",
-                    "expires_at": "2022-04-18T02:44:57.838+00:00"
-                }
-              }
-              this.$store.state.authenticated = true
-              this.$store.commit('setUser', data);
-              localStorage.setItem('user', JSON.stringify(data));
-              this.$store.commit('setToken', data.credential.token);
-              this.$router.push('/invitation');
+              this.process.run = false;
+              TokenService.saveToken(
+                res.data.credential.token,
+                JSON.stringify(res.data)
+              );
+              window.location = '/invitation'
+              // this.$router.push('/invitation');
             }else {
               this.$router.push('/confirmation/success/is_registered');
             }
           } else {
-            this.error.message = response.message;
+            this.process.run = false;
+            this.error.message = res.errors[0].error;
           }
         }).catch(err => {
-          console.log(err);
+          this.process.run = false;
           this.error.message = err.message;
         })
+      }else {
+        this.process.run = false;
       }
     },
   },

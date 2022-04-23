@@ -140,7 +140,7 @@ export function request(method, url, config = {}, options = {}) {
       url,
       params,
       data: data,
-      headers: suppressAuth ? headers : { ...headers, Authorization: bearerToken, "Content-Type": "application/json" },
+      headers: { Authorization: bearerToken, "Content-Type": "application/json" },
       maxContentLength
     })
       .then((response) => {

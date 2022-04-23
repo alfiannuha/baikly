@@ -91,6 +91,8 @@
 
 <script>
 import { post } from "@/service/Axios";
+import { TokenService } from "@/service/Storage.Service";
+
 export default {
   data() {
     return {
@@ -107,7 +109,34 @@ export default {
       show: false,
     }
   },
+  mounted () {
+    let tokens = this.$route.query.token;
+    let emails = this.$route.query.email;
+    this.verify(tokens, emails);
+  },
   methods: {
+    async verify(token, email) {
+      this.process.run = true;
+      await post('auth/verification', {
+        data: {
+          email,
+          token
+        }
+      })
+      .then(response => {
+        let res = response.data
+        if (res.code == 201) {
+          this.process.run = false;
+        }else {
+          this.$router.push('/404');
+        }
+      })
+      .catch(err => {
+        this.process.run = false;
+        this.error.message = err.message;
+        this.$router.push('/404');
+      });
+    },
     // login with email and password
     async verifyEmail() {
       this.process.run = true;
@@ -116,18 +145,23 @@ export default {
       const isValid = await this.$refs.observer.validate();
 
       if (isValid) {
-        await post(`auth/login`, {
-          email: this.form.email,
-          password: this.form.password,
+        await post(`auth/login/admin`, {
+          data: {
+            email: this.form.email,
+            password: this.form.password,
+          }
         }).then((response) => {
           let res = response.data
-          if (res.code == 200) {
-            this.$store.state.authenticated = true
-            this.$store.commit('setUser', res.data);
-            localStorage.setItem('user', JSON.stringify(res.data));
+          if (res.code == 201) {
+            this.process.run = false
+            TokenService.saveToken(
+              res.data.credential.token,
+              JSON.stringify(res.data)
+            );
             this.$router.push('/profile/personal/info');
           }else {
-            this.error = "Invalid token";
+            this.error.message = res.errors[0].error;
+            this.process.run = false;
           }
         }).catch(error => {
           console.log(error);

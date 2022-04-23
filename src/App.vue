@@ -1,13 +1,17 @@
 <template>
   <v-app>
-    <Navbar/>
+    <Navbar
+      v-if="
+        $route.name != 'Auth' ||
+        $route.name != 'Confirmation Success' ||
+        $route.name != 'Email Verified' ||
+        $route.name != 'Forgot Password' ||
+        $route.name != 'Personal Info Invitation' ||
+        $route.name != 'profile-personal-info'"/>
       <v-main 
         min-height="100vh"
+        style="background-color: #fafafa;"
         light>
-        <!-- <v-img
-          style="position: absolute; top: 25px; left: 25px; width: 80px; height: 35px;"
-          :src="require('@/assets/img/baikly_logo.png')">
-        </v-img> -->
         <router-view />
       </v-main>
   </v-app>

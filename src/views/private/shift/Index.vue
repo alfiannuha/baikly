@@ -4,7 +4,6 @@
     <div class="py-7 text-h4 font-weight-bold text-color">
       {{ $route.name }}
     </div>
-    
   </div>
 </template>
 

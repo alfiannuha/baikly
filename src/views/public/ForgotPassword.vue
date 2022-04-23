@@ -56,7 +56,7 @@
     </v-row>
 
     <div v-if="showChangePassword == true" class="d-flex justify-center align-center pt-16">
-      <ChangePassword />
+      <ChangePassword :email="$route.query.email" :code="$route.query.code"/>
     </div>
 
   </div>
@@ -72,9 +72,12 @@ export default {
   data() {
     return {
       form: {
+        emailforgot: '',
+        codeforgot: '',
         email: '',
+        captcha: '',
       },
-      showChangePassword:  false,
+      showChangePassword:  true,
       process: {
         run: false,
       },
@@ -93,14 +96,13 @@ export default {
         'theme' : 'light'
       });
     }, 1000)
-    // this.$route.meta.prevent_move = true;
   },
   methods: {
     verifyCallback(res) {
       console.log('callback captcha',res);
+      this.form.captcha = res;
     },
     async save() {
-
       this.process.run = true;
       this.error.message = '';
 
@@ -108,15 +110,21 @@ export default {
 
       if (isValid) {
         await post(`auth/forgot-password`, {
-          email: this.form.email,
+          data: {
+            email: this.form.email,
+            captcha: this.form.captcha,
+          }
         }).then(response => {
           let res = response.data
-          if (res.code == 200) {
+          if (res.code == 201) {
+            this.process.run = false;
             this.showChangePassword = true;
           }else {
-            this.error.message = "invalid email format";
+            this.process.run = false;
+            this.error.message = res.errors[0].error;
           }
         }).catch(error => {
+          this.process.run = false;
           console.log(error);
         })
       }else {

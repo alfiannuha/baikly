@@ -191,14 +191,18 @@ export default {
         data: {
           account_id: user.uid,
           email: user.email,
-          fullname: user.displayName,
+          name: user.displayName,
         }
       }).then((response) => {
         let res = response.data
-        if (res.code == 201) {
-          window.location = `/confirmation/success/is_registered?email=${user.email}`;
-        } else {
-          this.error.message = res.errors[0].error;
+        TokenService.saveToken(
+          res.data.credential.token,
+          JSON.stringify(res.data)
+        );
+        if (res.data.user.is_fill_personal == 0) {
+          window.location = '/profile/personal/info'
+        }else {
+          window.location = '/'
         }
       }).catch(err => {
         this.process.run = false;

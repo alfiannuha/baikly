@@ -113,6 +113,7 @@
           <v-list class="py-0 px-0">
             <v-list-item @click="logout()">
               <v-list-item-subtitle class="text-color pt-0" style="font-weight: 600">
+                <v-icon color="red" size="20" left>mdi-logout-variant</v-icon>
                 Log Out
               </v-list-item-subtitle>
             </v-list-item>
@@ -250,11 +251,9 @@
 </template>
 
 <script>
-  import { get, post, put, destroy } from "@/service/Axios";
   import { TokenService } from "@/service/Storage.Service";
   import Unauthorized from "../components/401.vue";
   import ErrorNetwork from "../components/500.vue";
-  import store from '@/store'
   export default {
     components: {
       Unauthorized,
@@ -267,8 +266,6 @@
         loaded: true,
         comparePath: "",
         image_profile: "",
-        refreshing: false,
-        updateExists: false,
         model: null,
         drawer: true,
         darkMode: false,
@@ -323,20 +320,6 @@
         }
       }
     },
-    created () {
-      document.addEventListener(
-        'swUpdated', this.showRefreshUI, { once: true }
-      );
-      if (navigator.serviceWorker) {
-        navigator.serviceWorker.addEventListener(
-          'controllerchange', () => {
-            if (this.refreshing) return;
-            this.refreshing = true;
-            window.location.reload();
-          }
-        );
-      }
-    },
     watch: {
       '$route' (to, from) { 
         if (from.matched.length > 0) {
@@ -375,17 +358,6 @@
     },
     mounted () {},
     methods: {
-      showRefreshUI (e) {
-        this.registration = e.detail;
-        this.updateExists = true;
-        this.dialog.upgrade = true;
-      },
-      refreshApp () {
-        this.updateExists = false;
-        this.dialog.upgrade = false;
-        if (!this.registration || !this.registration.waiting) { return; }
-        this.registration.waiting.postMessage('skipWaiting');
-      },
       convert(item) {
         return item.replace(/&lt;/g, '<')
       },

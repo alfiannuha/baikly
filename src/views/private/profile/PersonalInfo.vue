@@ -172,6 +172,7 @@ export default {
   data() {
     return {
       form: {
+        password: '',
         title_job: '',
         phone_number: '',
         gender: '',
@@ -211,19 +212,38 @@ export default {
       const isValid = await this.$refs.observer.validate();
 
       if (isValid) {
-        await post(`auth/personal-info/admin`, {
-          data: {
+        let data = {}
+        let endpoint = ''
+        if (user.is_email_google == 1) {
+          data = {
+            password: this.form.password,
             job_title : this.form.title_job,
             mobilephone : this.form.phone_number,
             gender : this.form.gender,
             company_name : this.form.company_name,
             total_employee : this.form.total_employees ? this.form.total_employees : 2
           }
+          endpoint = `auth/personal-info-google/admin`
+        }else {
+          data = {
+            job_title : this.form.title_job,
+            mobilephone : this.form.phone_number,
+            gender : this.form.gender,
+            company_name : this.form.company_name,
+            total_employee : this.form.total_employees ? this.form.total_employees : 2
+          }
+          endpoint = `auth/personal-info/admin`
+        }
+        await post(endpoint, {
+          data
         }).then(response => {
           let res = response.data
           if(res.code == 201) {
             this.process.run = false;
             this.$refs.snackbar.open("#000000", `You successfully add personal info`);
+            let user = JSON.parse(localStorage.getItem('access_user'));
+            user.user.is_fill_personal = 1
+            localStorage.setItem('access_user', JSON.stringify(user));
             setTimeout(() => {
               this.$router.push('/invitation');
             },2000)
@@ -233,6 +253,7 @@ export default {
           }
         }).catch(error => {
           this.process.run = false;
+          this.error.message = error.message;
         })
       }else {
         this.process.run = false;

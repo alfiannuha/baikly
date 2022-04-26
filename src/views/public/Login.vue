@@ -120,6 +120,8 @@ import firebaseapp from "../../plugins/Firebase"
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { post } from "@/service/Axios";
 import { TokenService } from "@/service/Storage.Service";
+
+const provider = new GoogleAuthProvider();
 export default {
 data() {
     return {
@@ -138,11 +140,6 @@ data() {
     }
   },
   mounted() {
-    let slug = this.$route.query.slug;
-
-    if (slug == "is_login") {
-      this.isShow = false;
-    }
   },
   methods: {
     // login with google
@@ -179,18 +176,19 @@ data() {
         data: {
           account_id: user.uid,
           email: user.email,
-          fullname: user.displayName,
+          name: user.displayName,
         }
       }).then((response) => {
         let res = response.data
+        console.log(res);
         if (res.code == 201) {
           TokenService.saveToken(
-            res.data.token,
-            JSON.stringify(res.data.profile)
-          )
+            res.data.credential.token,
+            JSON.stringify(res.data)
+          );
 
           if (res.data.user.is_fill_personal == 0) {
-            window.location = '/invitation'
+            window.location = '/profile/personal/info'
           }else {
             window.location = '/'
           }

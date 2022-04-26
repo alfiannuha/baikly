@@ -34,7 +34,7 @@
             </v-form>
           </ValidationObserver>
           <div class="text-center justify-center">
-            <v-alert type="error" text dense prominent 
+            <v-alert :type="error.color" text dense prominent 
               v-show="error.message.length > 0"
               v-html="error.message">
             </v-alert>
@@ -55,20 +55,12 @@
       </v-col>
     </v-row>
 
-    <div v-if="showChangePassword == true" class="d-flex justify-center align-center pt-16">
-      <ChangePassword :email="$route.query.email" :code="$route.query.code"/>
-    </div>
-
   </div>
 </template>
 
 <script>
-import ChangePassword from '../public/ChangePassword.vue'
 import { post } from "@/service/Axios";
 export default {
-  components: {
-    ChangePassword,
-  },
   data() {
     return {
       form: {
@@ -77,12 +69,12 @@ export default {
         email: '',
         captcha: '',
       },
-      showChangePassword:  true,
       process: {
         run: false,
       },
       error: {
         message: '',
+        color: '',
       },
       show: false,
     }
@@ -118,10 +110,12 @@ export default {
           let res = response.data
           if (res.code == 201) {
             this.process.run = false;
-            this.showChangePassword = true;
+            this.error.message = `We have sent you email to ${this.form.email}. Please click the link in that message to complete your data.`;
+            this.error.color = 'success'
           }else {
             this.process.run = false;
             this.error.message = res.errors[0].error;
+            this.error.color = 'error';
           }
         }).catch(error => {
           this.process.run = false;

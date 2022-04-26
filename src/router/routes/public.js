@@ -3,6 +3,7 @@ const Login = () => import(/* webpackPrefetch: true */ '@/views/public/Login.vue
 const ConfirmationSuccess = () => import(/* webpackPrefetch: true */ '@/views/public/ConfirmationSuccess.vue')
 const EmailVerified = () => import(/* webpackPrefetch: true */ '@/views/public/EmailVerified.vue')
 const ForgotPassword = () => import(/* webpackPrefetch: true */ '@/views/public/ForgotPassword.vue')
+const ChangePassword = () => import(/* webpackPrefetch: true */ '@/views/public/ChangePassword.vue')
 const PersonalInfoInvitation = () => import(/* webpackPrefetch: true */ '@/views/public/PersonalInfoInvitation.vue')
 
 const routes = [
@@ -44,6 +45,14 @@ const routes = [
     component: ForgotPassword,
     meta: {
       title: "Forgot Password"
+    }
+  },
+  {
+    path: "/change/password",
+    name: "Change Password",
+    component: ChangePassword,
+    meta: {
+      title: "Change Password"
     }
   },
   {

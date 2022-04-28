@@ -132,7 +132,7 @@ export default {
       const isValid = await this.$refs.observer.validate();
 
       if (isValid) {
-        await post(`auth/reset-password`, {
+        await post(`v1/auth/reset-password`, {
           data: {
             email: this.email,
             code: this.code,

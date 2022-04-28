@@ -110,8 +110,9 @@
               </v-list-item-icon>
             </v-list-item>
           </template>
+          <!-- <div class="g_id_signout" @click="signout">Sign Out</div> -->
           <v-list class="py-0 px-0">
-            <v-list-item @click="logout()">
+            <v-list-item @click="logout()" class="g_id_signout">
               <v-list-item-subtitle class="text-color pt-0" style="font-weight: 600">
                 <v-icon color="red" size="20" left>mdi-logout-variant</v-icon>
                 Log Out
@@ -372,16 +373,14 @@
         window.location.reload()
       },
       async logout() {
-        // await post(`auth/logout`).then(response => {
-        //   let res = response.data
-        //   if (res.code == 201) {
-            TokenService.removeToken()
-            localStorage.clear();
-            window.location = '/login'
-        //   }else {
-        //     this.dialog.logout = true;
-        //   }
-        // })
+        // var auth2 = gapi.auth2.getAuthInstance();
+        // auth2.signOut().then(function () {
+        //   console.log('User signed out.');
+        // });
+        // gapi.auth2.getAuthInstance().disconnect();
+        TokenService.removeToken()
+        localStorage.clear();
+        window.location = '/login'
       }
     },
   }

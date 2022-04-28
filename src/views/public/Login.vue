@@ -9,7 +9,17 @@
           <div class="color-default text-h3 mt-16 mb-8">
             Welcome to BAIKLY
           </div>
-          <v-btn
+
+          <div 
+            class="g-signin2"  
+            id="my-signin2" 
+            data-onsuccess="onSuccess" 
+            width="100%">
+          </div>
+
+          <div class="g_id_signout" @click="signout"></div>
+
+          <!-- <v-btn
             large
             elevation="0"
             outlined
@@ -19,8 +29,8 @@
           >
             <img :src="require('@/assets/img/sosmed/login_google.png')"  width="20px" class="mr-4" />
             Continue with Google
-          </v-btn>
-          <p class="text-third font-weight-normal mb-10 mt-10">
+          </v-btn> -->
+          <p class="text-third font-weight-normal mb-10 mt-7">
             or use your email account
           </p>
 
@@ -139,7 +149,12 @@ data() {
       show: false,
     }
   },
+  created() {
+    this.signout()
+  },
   mounted() {
+    this.onLoad()
+    this.renderButton()
   },
   methods: {
     // login with google
@@ -168,11 +183,57 @@ data() {
           // ...
         });
     },
+    renderButton() {
+      gapi.signin2.render('my-signin2', {
+        'scope': 'profile email',
+        'width': 500,
+        'height': 50,
+        'longtitle': true,
+        'theme': 'outline',
+        'onsuccess': this.onSuccess,
+        // 'onfailure': onFailure
+      });
+    },
+    onLoad() {
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
+    },
+    signout() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.disconnect();
+      auth2.signOut();
+    },
+    onSuccess(googleUser) {
+      console.log('onSignIn', googleUser);
+      // Useful data for your client-side scripts:
+      var profile = googleUser.getBasicProfile();
+      console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+      console.log('Full Name: ' + profile.getName());
+      console.log('Given Name: ' + profile.getGivenName());
+      console.log('Family Name: ' + profile.getFamilyName());
+      console.log("Image URL: " + profile.getImageUrl());
+      console.log("Email: " + profile.getEmail());
+
+      // The ID token you need to pass to your backend:
+      var id_token = googleUser.getAuthResponse().id_token;
+      console.log("ID Token: " + id_token);
+
+      googleUser.disconnect()
+
+      const user = {
+        uid: profile.getId(),
+        displayName: profile.getName(),
+        email: profile.getEmail(),
+      }
+
+      this.loginGoogle(user)
+    },
     // login with google / sso
     async loginGoogle(user) {
       this.process.run = true;
 
-      await post(`auth/login-google`, {
+      await post(`v1/auth/login-google`, {
         data: {
           account_id: user.uid,
           email: user.email,
@@ -207,7 +268,7 @@ data() {
       this.error.message = '';
       let isValid = await this.$refs.observerLogin.validate();
       if(isValid) {
-        await post(`auth/login/admin`, {
+        await post(`v1/auth/login/admin`, {
           data: {
             email: this.form.email,
             password: this.form.password,
@@ -242,5 +303,10 @@ data() {
 </script>
 
 <style>
+/* .abcRioButton {
+  border-radius: 10px !important;
+  outline: outset !important;
+  outline-width: 1px !important;
+} */
 
 </style>

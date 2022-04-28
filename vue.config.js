@@ -4,11 +4,12 @@ module.exports = {
   devServer: {
     proxy: {
       // proxy all requests starting with /api to jsonplaceholder
-      '/v1': {
+      '/v1/api': {
         target: 'https://bebaik.gregetkreatif.com',
         changeOrigin: true,
+        secure: true,
         pathRewrite: {
-          '^/v1': ''
+          '^/v1/api': ''
         }
       }
     }

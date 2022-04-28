@@ -214,7 +214,7 @@ export default {
       if (isValid) {
         let data = {}
         let endpoint = ''
-        if (user.is_email_google == 1) {
+        if (this.user.is_email_google == 1) {
           data = {
             password: this.form.password,
             job_title : this.form.title_job,
@@ -223,7 +223,7 @@ export default {
             company_name : this.form.company_name,
             total_employee : this.form.total_employees ? this.form.total_employees : 2
           }
-          endpoint = `auth/personal-info-google/admin`
+          endpoint = `admin/auth/personal-info-google`
         }else {
           data = {
             job_title : this.form.title_job,
@@ -232,7 +232,7 @@ export default {
             company_name : this.form.company_name,
             total_employee : this.form.total_employees ? this.form.total_employees : 2
           }
-          endpoint = `auth/personal-info/admin`
+          endpoint = `admin/auth/personal-info`
         }
         await post(endpoint, {
           data

@@ -117,7 +117,7 @@ export default {
   methods: {
     async verify(token, email) {
       this.process.run = true;
-      await post('auth/verification', {
+      await post('v1/auth/verification', {
         data: {
           email,
           token
@@ -145,7 +145,7 @@ export default {
       const isValid = await this.$refs.observer.validate();
 
       if (isValid) {
-        await post(`auth/login/admin`, {
+        await post(`v1/auth/login/admin`, {
           data: {
             email: this.form.email,
             password: this.form.password,

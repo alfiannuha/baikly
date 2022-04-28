@@ -203,7 +203,7 @@ export default {
       const isValid = await this.$refs.observer.validate();
 
       if (isValid) {
-        await post(`auth/personal-info`, {
+        await post(`v1/auth/personal-info`, {
             email: this.form.email,
             job_title : this.form.title_job,
             password : this.form.password,

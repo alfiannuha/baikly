@@ -101,7 +101,7 @@ export default {
       const isValid = await this.$refs.observer.validate();
 
       if (isValid) {
-        await post(`auth/forgot-password`, {
+        await post(`v1/auth/forgot-password`, {
           data: {
             email: this.form.email,
             captcha: this.form.captcha,

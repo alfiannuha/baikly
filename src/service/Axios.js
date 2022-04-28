@@ -438,6 +438,11 @@ export function put(url, config, options) {
   return request("PUT", url, config, options);
 }
 
+export function patch(url, config, options) {
+  return request("PATCH", url, config, options);
+}
+
+
 // not "delete()" because of reserved word
 export function destroy(url, config, options) {
   return request("DELETE", url, config, options);

@@ -96,19 +96,11 @@ export default {
   components: {
     Snackbar
   },
-  props: {
-    email: {
-      type: String,
-      default: ""
-    },
-    code: {
-      type: String,
-      default: ""
-    }
-  },
   data() {
     return {
       form: {
+        codes: '',
+        emails: '',
         newpassword: '',
         confirmnewpassword: '',
       },
@@ -123,7 +115,10 @@ export default {
       show: false,
     }
   },
-  mounted () {},
+  mounted () {
+    this.form.codes = this.$route.query.code;
+    this.form.emails = this.$route.query.email;
+  },
   methods: {
     async savePassword() {
       this.process.run = true;
@@ -134,8 +129,8 @@ export default {
       if (isValid) {
         await post(`v1/auth/reset-password`, {
           data: {
-            email: this.email,
-            code: this.code,
+            email: this.form.emails,
+            code: this.form.codes,
             password: this.form.newpassword,
             re_password: this.form.confirmnewpassword,
           }

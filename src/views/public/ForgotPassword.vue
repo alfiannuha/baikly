@@ -43,8 +43,7 @@
               x-large
               elevation="0"
               color="primary"
-              :disabled="$store.state.process.run"
-              :loading="$store.state.process.run"
+              :disabled="process.run"
               v-on:keyup.enter="save"
               @click="save"
               class="white--text text-capitalize">

@@ -29,7 +29,7 @@
                   single-line
                   color="primary"
                   placeholder="new job title"
-                  v-model="form.jobs"
+                  v-model="form.title_job"
                   :error-messages="errors"
                   required>
                 </v-text-field>
@@ -79,12 +79,12 @@
       </v-card-title>
       <v-divider class="mx-10 mt-2" style="color: #F9F9F9 !important"></v-divider>
       <v-card-text style="max-height: 550px; overflow: auto">
-        <div v-for="(item, index) in employees" :key="index" class="mt-3">
-          <v-icon color="red" class="float-right" @click="deleteEmployees(index)">
-            mdi-trash-can-outline
-          </v-icon>
-          <ValidationObserver ref="observer">
-            <v-form class="text-left">
+        <ValidationObserver ref="observer">
+          <v-form class="text-left">
+            <div v-for="(item, index) in employees" :key="index" class="mt-3">
+              <v-icon color="red" class="float-right" @click="deleteEmployees(index)">
+                mdi-trash-can-outline
+              </v-icon>
               <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
                 <div class="text-color mb-2">Email *</div>
                 <v-text-field
@@ -107,10 +107,10 @@
                 v-slot="{ errors }">
                 <div class="text-color required">Job Title *</div>
                 <v-autocomplete
-                  v-model="item.title_job"
+                  v-model="item.profession"
                   :items="jobs"
-                  item-text="title"
-                  item-value="id"
+                  item-text="profession"
+                  item-value="profession"
                   color="primary"
                   placeholder="your job title"
                   outlined
@@ -132,10 +132,10 @@
                 </v-autocomplete>
               </ValidationProvider>
 
-            </v-form>
-          </ValidationObserver>
-          <v-divider></v-divider>
-        </div>
+              <v-divider></v-divider>
+            </div>
+          </v-form>
+        </ValidationObserver>
       </v-card-text>
       <v-card-actions class="pa-5">
         <v-btn
@@ -148,6 +148,8 @@
         </v-btn>
         <v-btn
           color="primary"
+          :loading="process.run"
+          @click="invitationEmployees"
           class="white--text text-capitalize pa-5"
           depressed>
           Submit
@@ -161,7 +163,7 @@
 <script>
 import Snackbar from '@/components/Snackbar.vue';
 import Dialog from '@/components/Dialog.vue';
-import { post } from "@/service/Axios";
+import { post, get } from "@/service/Axios";
 export default {
   components: {
     Snackbar,
@@ -175,30 +177,30 @@ export default {
       employees: [
         {
           email: '',
-          title_job: '',
+          profession: '',
         }
       ],
       jobs: [
-        {
-          id: 1,
-          title: 'Front End Dev'
-        },
-        {
-          id: 2,
-          title: 'Back End Dev'
-        },
-        {
-          id: 3,
-          title: 'Mobile Dev'
-        },
-        {
-          id: 4,
-          title: 'QA'
-        },
-        {
-          id: 5,
-          title: 'Manajer'
-        },
+        // {
+        //   id: 1,
+        //   title: 'Front End Dev'
+        // },
+        // {
+        //   id: 2,
+        //   title: 'Back End Dev'
+        // },
+        // {
+        //   id: 3,
+        //   title: 'Mobile Dev'
+        // },
+        // {
+        //   id: 4,
+        //   title: 'QA'
+        // },
+        // {
+        //   id: 5,
+        //   title: 'Manajer'
+        // },
       ],
       dialog: {
         dialogAddJobs: false,
@@ -209,7 +211,6 @@ export default {
       error: {
         message: '',
       },
-      show: false,
     }
   },
   computed: {
@@ -217,11 +218,14 @@ export default {
       return this.$store.state.user
     }
   },
+  mounted () {
+    this.getJobs()
+  },
   methods: {
     addEmployees() {
       this.employees.push({
         email: '',
-        title_job: '',
+        profession: '',
       })
     },
     deleteEmployees(index) {
@@ -238,12 +242,78 @@ export default {
       this.$refs.observerJobs.reset()
       this.form.title_job = ''
     },
-    saveJobs() {},
+    async getJobs(){
+      await get('admin/profession/list?limit=100').then(response => {
+        let res = response.data
+        console.log(res);
+        if (res.code == 200) {
+          this.jobs = res.data.data
+        }else {
+          this.error.message = res.message
+          this.dialog.dialogError = true
+        }
+      }).catch(err => {
+        console.log(err);
+        this.process.run = false
+      })
+    },
+    async saveJobs() {
+      this.process.run = true
+      const isValid = await this.$refs.observerJobs.validate();
+
+      if (isValid) {
+        await post('admin/profession/create', {
+          data: {
+            profession: this.form.title_job
+          }
+        })
+          .then(response => {
+            let res = response.data
+            if (res.code == 201) {
+              this.process.run = false
+              this.getJobs()
+              this.closeJobs()
+            }else {
+              this.process.run = false
+              this.error.message = res.message
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            this.process.run = false
+          })
+      }else{
+        this.process.run = false
+      }
+    },
     // login with email and password
-    invitationEmployees() {
-      this.$refs.snackbar.open("#000000", `You successfully add personal info`);
-      // this.$refs.snackbar.open("#000000", `You failed to add personal info. Try again`, "mdi-close-circle-outline", "#E74040");
-      this.$router.push('/');
+    async invitationEmployees() {
+      this.process.run = true
+
+      const isValid = await this.$refs.observer.validate();
+      if (isValid) {
+
+        let data = {
+          data: this.employees
+        }
+        const response = await post('admin/invite/create', {
+          data
+        })
+        let res = response.data
+        console.log(res);
+        if (res.code == 200) {
+          this.$refs.snackbar.open("#000000", `You successfully add personal info`);
+          this.$router.push('/invitation');
+          this.process.run = false
+        } else {
+          this.$refs.snackbar.open("#000000", `You failed to add personal info. Try again`, "mdi-close-circle-outline", "#E74040");
+          this.error.message = response.message
+          this.process.run = false
+        }
+      } else {
+        this.process.run = false
+      }
+      
     },
   },
 

@@ -22,7 +22,7 @@
               <ValidationProvider name="Job" rules="required" v-slot="{ errors }">
                 <div class="text-color mb-2">Job Title *</div>
                 <v-text-field
-                  v-on:keyup.enter="saveJobs" 
+                  v-on:keyup.enter="saveJobs(indexes)" 
                   outlined
                   dense
                   autocomplete="off"
@@ -45,7 +45,7 @@
             color="primary"
             :disabled="process.run"
             :loading="process.run"
-            v-on:keyup.enter="saveJobs"
+            v-on:keyup.enter="saveJobs(indexes)"
             @click="saveJobs"
             class="white--text text-capitalize">
             Add
@@ -119,7 +119,7 @@
                   required>
                   <template v-slot:append-item>
                     <v-list class="py-0">
-                      <v-list-item @click="addJobs()">
+                      <v-list-item @click="addJobs(index)">
                         <v-list-item-content>
                           <v-list-item-title class="color-default text-lowercase">
                             <v-icon left size="20" color="primary">mdi-plus</v-icon>
@@ -233,8 +233,10 @@ export default {
         this.employees.splice(index, 1)
       }
     },
-    addJobs() {
+    addJobs(i) {
+      console.log(i);
       this.dialog.dialogAddJobs = true
+      this.indexes = i
       this.$refs.observerJobs.reset()
     },
     closeJobs() {
@@ -243,9 +245,14 @@ export default {
       this.form.title_job = ''
     },
     async getJobs(){
-      await get('admin/profession/list?limit=100').then(response => {
+      await get('admin/profession/list',{
+        params: {
+          limit: 100,
+          sort: 'created_at',
+          dir: 'asc'
+        }
+      }).then(response => {
         let res = response.data
-        console.log(res);
         if (res.code == 200) {
           this.jobs = res.data.data
         }else {
@@ -257,7 +264,7 @@ export default {
         this.process.run = false
       })
     },
-    async saveJobs() {
+    async saveJobs(i) {
       this.process.run = true
       const isValid = await this.$refs.observerJobs.validate();
 
@@ -271,6 +278,7 @@ export default {
             let res = response.data
             if (res.code == 201) {
               this.process.run = false
+              this.employees[i].profession = res.data.profession
               this.getJobs()
               this.closeJobs()
             }else {

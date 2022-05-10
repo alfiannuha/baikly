@@ -186,7 +186,7 @@ data() {
     renderButton() {
       gapi.signin2.render('my-signin2', {
         'scope': 'profile email',
-        'width': 500,
+        'width': this.$vuetify.breakpoint.name == 'xl' ? 650 : 500,
         'height': 50,
         'longtitle': true,
         'theme': 'outline',

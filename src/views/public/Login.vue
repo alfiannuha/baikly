@@ -206,19 +206,19 @@ data() {
       auth2.signOut();
     },
     onSuccess(googleUser) {
-      console.log('onSignIn', googleUser);
+      // console.log('onSignIn', googleUser);
       // Useful data for your client-side scripts:
       var profile = googleUser.getBasicProfile();
-      console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-      console.log('Full Name: ' + profile.getName());
-      console.log('Given Name: ' + profile.getGivenName());
-      console.log('Family Name: ' + profile.getFamilyName());
-      console.log("Image URL: " + profile.getImageUrl());
-      console.log("Email: " + profile.getEmail());
+      // console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+      // console.log('Full Name: ' + profile.getName());
+      // console.log('Given Name: ' + profile.getGivenName());
+      // console.log('Family Name: ' + profile.getFamilyName());
+      // console.log("Image URL: " + profile.getImageUrl());
+      // console.log("Email: " + profile.getEmail());
 
       // The ID token you need to pass to your backend:
       var id_token = googleUser.getAuthResponse().id_token;
-      console.log("ID Token: " + id_token);
+      // console.log("ID Token: " + id_token);
 
       googleUser.disconnect()
 
@@ -242,7 +242,6 @@ data() {
         }
       }).then((response) => {
         let res = response.data
-        console.log(res);
         if (res.code == 201) {
           TokenService.saveToken(
             res.data.credential.token,

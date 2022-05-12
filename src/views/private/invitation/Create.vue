@@ -22,7 +22,7 @@
               <ValidationProvider name="Job" rules="required" v-slot="{ errors }">
                 <div class="text-color mb-2">Job Title *</div>
                 <v-text-field
-                  v-on:keyup.enter="saveJobs(indexes)" 
+                  v-on:keyup.enter="saveJobs()" 
                   outlined
                   dense
                   autocomplete="off"
@@ -45,7 +45,7 @@
             color="primary"
             :disabled="process.run"
             :loading="process.run"
-            v-on:keyup.enter="saveJobs(indexes)"
+            v-on:keyup.enter="saveJobs()"
             @click="saveJobs"
             class="white--text text-capitalize">
             Add
@@ -180,28 +180,8 @@ export default {
           profession: '',
         }
       ],
-      jobs: [
-        // {
-        //   id: 1,
-        //   title: 'Front End Dev'
-        // },
-        // {
-        //   id: 2,
-        //   title: 'Back End Dev'
-        // },
-        // {
-        //   id: 3,
-        //   title: 'Mobile Dev'
-        // },
-        // {
-        //   id: 4,
-        //   title: 'QA'
-        // },
-        // {
-        //   id: 5,
-        //   title: 'Manajer'
-        // },
-      ],
+      employee_index: 0,
+      jobs: [],
       dialog: {
         dialogAddJobs: false,
       },
@@ -236,12 +216,11 @@ export default {
     addJobs(i) {
       console.log(i);
       this.dialog.dialogAddJobs = true
-      this.indexes = i
+      this.employee_index = i
       this.$refs.observerJobs.reset()
     },
     closeJobs() {
       this.dialog.dialogAddJobs = false
-      this.$refs.observerJobs.reset()
       this.form.title_job = ''
     },
     async getJobs(){
@@ -264,7 +243,7 @@ export default {
         this.process.run = false
       })
     },
-    async saveJobs(i) {
+    async saveJobs() {
       this.process.run = true
       const isValid = await this.$refs.observerJobs.validate();
 
@@ -276,9 +255,10 @@ export default {
         })
           .then(response => {
             let res = response.data
+            console.log(res.data);
             if (res.code == 201) {
               this.process.run = false
-              this.employees[i].profession = res.data.profession
+              this.employees[this.employee_index].profession = res.data.profession
               this.getJobs()
               this.closeJobs()
             }else {

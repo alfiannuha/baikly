@@ -4,7 +4,7 @@ import 'moment/locale/id'
 
 Vue.filter("date", function (value) {
   if (!value) return ""
-  return moment(value).format("ddd, D MMM YYYY", "id")
+  return moment(value).format("ddd, D MMM YYYY HH:mm", "id")
 })
 
 Vue.filter("time", function (value) {

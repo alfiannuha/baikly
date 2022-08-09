@@ -1,6 +1,6 @@
 //Change this value every time before you build
 const PREFIX_NAME = 'baikly'
-const LATEST_VERSION = 'v0.0.5'
+const LATEST_VERSION = 'v0.0.1'
 
 workbox.core.setCacheNameDetails({
   prefix: PREFIX_NAME

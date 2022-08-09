@@ -2,7 +2,7 @@
 
 ## Clone repo
 ```
-git clone https://github.com/alfiannuha/baikly.git .
+git clone https://github.com/Baikly-Development/baikly-frontend.git .
 ```
 
 ## API DOCUMENTATION
@@ -33,7 +33,7 @@ npm run build
 
 ## Configuration API
 
-Mengatur perubahan url API terdapat di dalam Folder service pada file `Config.js`
+Mengatur perubahan url API terdapat di dalam Folder service pada file `.env`
 
 Mengatur perubahan pada Axios terdapat di dalam Folder service pada file `Axios.js`
 

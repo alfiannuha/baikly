@@ -1,12 +1,9 @@
 import axios from "axios";
 import { mapKeys, mapValues, camelCase, snakeCase } from "lodash";
 import { TokenService } from "@/service/Storage.Service.js"
-import Config from "@/service/Config"
 import store from '@/store'
 
-// const { VUE_APP_ACCESS_KEY,VUE_APP_BASE_URL,VUE_APP_TITLE } = process.env;
-const  VUE_APP_BASE_URL  = Config.checkDomain();
-const VUE_APP_ACCESS_KEY = 'd986c63c-0982-46c6-8aed-2b16d72e1633'
+const { VUE_APP_BASE_URL } = process.env
 
 function getAccessToken() {
   // @todo: load access token from cookie or locale storage
@@ -16,11 +13,6 @@ function getAccessToken() {
 function getFcm() {
   // @todo: load access token from cookie or locale storage
   return TokenService.getFCMToken();
-}
-
-function getAccessCode() {
-  // @todo: load access token from cookie or locale storage
-  return TokenService.getSerialNumber();
 }
 
 function transformKeys(data, iteratee) {
@@ -61,10 +53,8 @@ export function request(method, url, config = {}, options = {}) {
   } = options;
 
   const baseURL = VUE_APP_BASE_URL;
-  const xauth = `Basic ${VUE_APP_ACCESS_KEY}` ;
 
   // @see: https://tools.ietf.org/html/rfc6750
-  // const bearerToken = `Bearer ${getAccessToken()}`;
   const bearerToken = `Bearer ${getAccessToken()}`;
 
   axios.interceptors.request.use(
@@ -87,7 +77,7 @@ export function request(method, url, config = {}, options = {}) {
       return response;
     },
     function (error) {
-      console.log(error.response.data);
+      // console.log(error.response.data);
       // Any status codes that falls outside the range of 2xx cause this function to trigger
       // Do something with response error
       if (error.response) {
@@ -113,7 +103,7 @@ export function request(method, url, config = {}, options = {}) {
 
           return;
         } else if (error.response.data.status == 400) {
-          console.log(error.response.data.validation);
+          // console.log(error.response.data.validation);
           // If request 400 (failed)
           store.state.dialogAuthAlert = true
           store.state.process.run = false
@@ -150,8 +140,6 @@ export function request(method, url, config = {}, options = {}) {
       url,
       params,
       data: data,
-      // headers: suppressAuth ? headers : { ...headers, Authorization: bearerToken, "x-api-key": xauth, "Content-Type": "application/x-www-form-urlencoded" },
-      // headers: suppressAuth ? headers : { ...headers, Token: bearerToken, "Content-Type": "application/json" },
       headers: { Authorization: bearerToken, "Content-Type": "application/json" },
       maxContentLength
     })
@@ -179,7 +167,7 @@ export function requestUpload(method, url, config = {}, options = {}) {
   } = options;
 
   const baseURL = VUE_APP_BASE_URL;
-  const xauth = `Basic ${VUE_APP_ACCESS_KEY}` ;
+  // const xauth = `Basic ${VUE_APP_ACCESS_KEY}` ;
 
   // @see: https://tools.ietf.org/html/rfc6750
   // const bearerToken = `Bearer ${getAccessToken()}`;
@@ -286,7 +274,7 @@ export function requestMedia(method, url, config = {}, options = {}) {
   } = options;
 
   const baseURL = VUE_APP_BASE_URL;
-  const xauth = `Basic ${VUE_APP_ACCESS_KEY}` ;
+  // const xauth = `Basic ${VUE_APP_ACCESS_KEY}` ;
 
   // @see: https://tools.ietf.org/html/rfc6750
   // const bearerToken = `Bearer ${getAccessToken()}`;
@@ -449,6 +437,11 @@ export function post(url, config, options) {
 export function put(url, config, options) {
   return request("PUT", url, config, options);
 }
+
+export function patch(url, config, options) {
+  return request("PATCH", url, config, options);
+}
+
 
 // not "delete()" because of reserved word
 export function destroy(url, config, options) {

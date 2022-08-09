@@ -18,7 +18,11 @@ export default new Vuex.Store({
       page: 1
     },
     dialog:{
-      confirmDelete: false
+      confirmDelete: false.valueOf,
+      container: false,
+      title: '', // title dialog
+      type: '', // type dialog
+      width: '', // width dialog
     },
     token: "",
     authenticated: false,

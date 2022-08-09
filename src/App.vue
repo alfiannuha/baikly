@@ -1,15 +1,43 @@
 <template>
   <v-app>
-    <Navbar/>
+    <v-snackbar
+      v-model="snackbar.state"
+      bottom
+      right
+      vertical
+      color="success"
+      timeout="-1"
+    >
+      <div class="subtitle-1 font-weight-normal">
+        {{ snackbar.text }}
+      </div>
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          text
+          color="#fff"
+          class="text-capitalize font-weight-bold"
+          v-bind="attrs"
+          @click.stop="refreshApp"
+        >
+          Refresh App
+        </v-btn>
+      </template>
+    </v-snackbar>
+
+    <Navbar
+      v-if="
+        $route.name != 'Auth' &&
+        $route.name != 'Confirmation Success' &&
+        $route.name != 'Email Verified' &&
+        $route.name != 'Forgot Password' &&
+        $route.name != 'Personal Info Invitation' &&
+        $route.name != 'Personal Info'"/>
       <v-main 
         min-height="100vh"
+        style="background-color: #fafafa;"
         light>
         <router-view />
       </v-main>
-    <Footer 
-      v-if="$vuetify.breakpoint.name !== 'xs' 
-      && $vuetify.breakpoint.name !== 'sm' 
-      && $vuetify.breakpoint.name !== 'md'"/>
   </v-app>
 </template>
 
@@ -24,27 +52,55 @@ export default {
     Navbar
   },
   data: () => ({
-    menu: [
-      {
-        title: 'Dashboard',
-        to:'/dashboard'
-      }
-    ]
+    snackbar: {
+      state: false,
+      text: "Versi terbaru telah tersedia"
+    },
+    refreshing: false,
+    updateExists: false,
   }),
+  watch: { 
+    '$route' (to, from) {
+      if(this.$route.path != '/login'){
+        // this.preventPrevilage()
+      }
+    } 
+  },
+  created () {
+    document.addEventListener(
+      'swUpdated', this.showRefreshUI, { once: true }
+    );
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener(
+        'controllerchange', () => {
+          if (this.refreshing) return;
+          this.refreshing = true;
+          window.location.reload();
+        }
+      );
+    }
+  },
   computed: {
     token () {
       return this.$store.state.token
     }
   },
-  watch: { 
-    '$route' (to, from) {
-      // this.tokenFirebase()
-      if(this.$route.path != '/login'){
-        this.preventPrevilage()
-      }
-    } 
-  },
   methods: {
+    showRefreshUI(e) {
+      // Display a snackbar inviting the user to refresh/reload the app due
+      // to an app update being available.
+      // The new service worker is installed, but not yet active.
+      // Store the ServiceWorkerRegistration instance for later use.
+      this.registration = e.detail;
+      this.snackbar.text = 'Versi terbaru telah tersedia!';
+      this.snackbar.state = true;
+    },
+    refreshApp() {
+      this.snackbar.state = false;
+      // Protect against missing registration.waiting.
+      if (!this.registration || !this.registration.waiting) { return; }
+      this.registration.waiting.postMessage('skipWaiting');
+    },
     preventPrevilage(){
       if(!TokenService.getToken()){
         TokenService.removeToken()

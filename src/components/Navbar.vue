@@ -97,10 +97,35 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <div class="text-left">
+        <v-menu offset-y class="rounded-xl">
+          <template v-slot:activator="{ on, attrs }">
+            <v-list-item v-bind="attrs" v-on="on" class="py-0">
+              <v-list-item-content class="py-0 mt-0">
+                <v-list-item-subtitle class="text-color pt-0" style="font-weight: 600">
+                  {{ user.name }}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-icon>
+                <v-icon color="#A8A8A8">mdi-chevron-down</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </template>
+          <!-- <div class="g_id_signout" @click="signout">Sign Out</div> -->
+          <v-list class="py-0 px-0">
+            <v-list-item @click="logout()" class="g_id_signout">
+              <v-list-item-subtitle class="text-color pt-0" style="font-weight: 600">
+                <v-icon color="red" size="20" left>mdi-logout-variant</v-icon>
+                Log Out
+              </v-list-item-subtitle>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
+
+      <!-- <div class="text-left">
         <v-sheet height="50" width="300">
           <v-list-item
             dense
-            to="/settings"
             class="py-0 pt-1 pb-1 pl-1 my-0"
             style="background-color: #F05326; border-color: #F05326; border-radius: 50px;font-size:19px">
               <v-list-item-avatar v-if="user.picture" class="my-0" style="height: 42px; min-width: 42px; width: 42px; border: 3px solid rgb(255, 255, 255);background-color: white">
@@ -137,6 +162,9 @@
                 <v-list-item-title class="white--text pt-0">
                   {{ user.name }}
                 </v-list-item-title>
+                <v-list-item-subtitle class="white--text pt-0">
+                  {{ user.email }}
+                </v-list-item-subtitle>
               </v-list-item-content>
           </v-list-item>
         </v-sheet>
@@ -149,41 +177,33 @@
         <v-card-text class="caption text-center pa-0 red--text color-second">
           Keluar
         </v-card-text>
-      </div>
+      </div> -->
     </v-app-bar>
 
     <!-- ==== NAVIGATION DRAWER BAGIAN SAMPING KIRI ==== -->
+      <!-- :mini-variant.sync="mini" -->
     <v-navigation-drawer
       v-model="drawer"
-      :mini-variant.sync="mini"
       fixed
       app
-      v-if="$route.name !== '/login'">
+      v-if="$route.name !== 'Login'">
       <v-list-item class="px-2" style="margin-bottom:7px">
-        <v-list-item-avatar>
-          <!-- <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img> -->
-          <v-avatar color="#F05326">
-            <span class="white--text text-h6 pr-2">{{ aliasName }}</span>
-          </v-avatar>
-        </v-list-item-avatar>
-        <v-list-item-title>CMS KIMI</v-list-item-title>
-        <v-btn
-          icon
-          @click.stop="mini = !mini">
-          <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
+        <v-img  
+          class="ml-3 mt-3"
+          style="position: absolute; width: 80px; height: 35px;"
+          :src="require('@/assets/img/baikly_logo.png')">
+        </v-img>
       </v-list-item>
-      <v-divider></v-divider>
       <v-list
         dense
         nav
         v-for="item in menu"
         :key="item.title"
-        style="color:#F05326"
+        style="color:#0061FF"
         class="py-1">
+          <!-- @click="$store.state.pagination.limit = 10;$store.state.pagination.page = 1" -->
         <v-list-item
           link
-          @click="$store.state.pagination.limit = 10;$store.state.pagination.page = 1"
           v-if="item.hasParent === 0"
           :to="item.href"
           :value="item.href.split('/')[1] === comparePath.split('/')[1] ? true : false">
@@ -232,11 +252,9 @@
 </template>
 
 <script>
-  import { get, post, put, destroy } from "@/service/Axios";
   import { TokenService } from "@/service/Storage.Service";
   import Unauthorized from "../components/401.vue";
   import ErrorNetwork from "../components/500.vue";
-  import store from '@/store'
   export default {
     components: {
       Unauthorized,
@@ -249,8 +267,6 @@
         loaded: true,
         comparePath: "",
         image_profile: "",
-        refreshing: false,
-        updateExists: false,
         model: null,
         drawer: true,
         darkMode: false,
@@ -261,26 +277,38 @@
         menu: [
           {
             text: 'Dashboard',
-            icon: 'mdi-speedometer-slow',
+            icon: 'mdi-view-grid-outline',
             href: '/dashboard',
             hasParent: 0,
           },
           {
-            text: 'Topic & Activity',
-            icon: 'mdi-briefcase-variant-outline',
-            href: '/course',
+            text: 'Employee',
+            icon: 'mdi-account-outline',
+            href: '/invitation',
             hasParent: 0,
           },
           {
-            text: 'Users',
-            icon: 'mdi-account-check-outline',
-            href: '/users',
+            text: 'Shift',
+            icon: 'mdi-calendar',
+            href: '/shift',
             hasParent: 0,
           },
           {
-            text: 'Settings',
-            icon: 'mdi-cog-outline',
-            href: '/settings',
+            text: 'Holiday',
+            icon: 'mdi-beach',
+            href: '/holiday',
+            hasParent: 0,
+          },
+          {
+            text: 'Scheduler',
+            icon: 'mdi-calendar-clock',
+            href: '/schedule',
+            hasParent: 0,
+          },
+          {
+            text: 'Leave',
+            icon: 'mdi-calendar-plus',
+            href: '/leave',
             hasParent: 0,
           },
         ],
@@ -291,20 +319,6 @@
         process: {
           run: false
         }
-      }
-    },
-    created () {
-      document.addEventListener(
-        'swUpdated', this.showRefreshUI, { once: true }
-      );
-      if (navigator.serviceWorker) {
-        navigator.serviceWorker.addEventListener(
-          'controllerchange', () => {
-            if (this.refreshing) return;
-            this.refreshing = true;
-            window.location.reload();
-          }
-        );
       }
     },
     watch: {
@@ -337,7 +351,7 @@
         return this.$store.state.dialogAuthAlert;
       },
       user () {
-        return JSON.parse(TokenService.getUser())
+        return JSON.parse(TokenService.getUser()).user
       },
       token () {
         return this.$store.state.token
@@ -345,17 +359,6 @@
     },
     mounted () {},
     methods: {
-      showRefreshUI (e) {
-        this.registration = e.detail;
-        this.updateExists = true;
-        this.dialog.upgrade = true;
-      },
-      refreshApp () {
-        this.updateExists = false;
-        this.dialog.upgrade = false;
-        if (!this.registration || !this.registration.waiting) { return; }
-        this.registration.waiting.postMessage('skipWaiting');
-      },
       convert(item) {
         return item.replace(/&lt;/g, '<')
       },
@@ -369,8 +372,12 @@
       loading(){
         window.location.reload()
       },
-      logout() {
-        this.$store.state.process.run = true
+      async logout() {
+        // var auth2 = gapi.auth2.getAuthInstance();
+        // auth2.signOut().then(function () {
+        //   console.log('User signed out.');
+        // });
+        // gapi.auth2.getAuthInstance().disconnect();
         TokenService.removeToken()
         localStorage.clear();
         window.location = '/login'
@@ -381,7 +388,7 @@
 
 <style>
   .c-default {
-    color: #F0932B !important;
+    color: #0061FF !important;
   }
   .divider-menu {
     min-height: 50px !important;
@@ -410,6 +417,6 @@
     margin-left: 20%;
   }
   .hover-menu:hover, .actived {
-  background: #F053261c !important;
+    background: #F05326 !important;
   }
 </style>
